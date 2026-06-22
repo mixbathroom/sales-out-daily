@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Sales Daily Report V5.3</title>
+<title>Sales Daily Report V5.4</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -235,6 +235,100 @@ select option{background:var(--bg2);color:var(--tx)}
 .miss-badge{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;flex-shrink:0}
 .miss-badge.red{background:rgba(248,113,113,0.15);color:#f87171}.miss-badge.amber{background:rgba(251,191,36,0.15);color:#fbbf24}.miss-badge.green{background:rgba(52,210,122,0.15);color:#34d27a}
 
+
+/* ═══════════════════════════════════════════════
+   MANAGER DESKTOP DASHBOARD
+═══════════════════════════════════════════════ */
+#mgr-desktop{display:none;position:fixed;inset:0;z-index:500;background:#070b18;flex-direction:column;overflow:hidden}
+#mgr-desktop.open{display:flex}
+
+/* Top Navbar */
+#mgr-nav{
+  height:52px;flex-shrink:0;
+  background:linear-gradient(90deg,#060a1c 0%,#0d1535 100%);
+  border-bottom:1px solid rgba(61,107,224,0.25);
+  display:flex;align-items:center;padding:0 20px;gap:0;
+}
+.mgr-tab{padding:0 18px;height:52px;display:flex;align-items:center;font-size:12px;font-weight:600;color:rgba(255,255,255,0.5);cursor:pointer;border-bottom:2.5px solid transparent;transition:all .18s;white-space:nowrap;gap:6px}
+.mgr-tab:hover{color:rgba(255,255,255,0.85);background:rgba(255,255,255,0.05)}
+.mgr-tab.on{color:#7fa3f0;border-bottom-color:#3d6be0;background:rgba(61,107,224,0.14);font-weight:700}
+#mgr-nav-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.mgr-filter-bar{display:flex;align-items:center;gap:8px}
+.mgr-sel{padding:5px 10px;background:rgba(255,255,255,0.05);border:.5px solid rgba(255,255,255,0.12);border-radius:8px;color:rgba(200,212,232,0.7);font-size:11px;font-family:inherit;cursor:pointer;outline:none}
+.mgr-sel:focus{border-color:rgba(127,163,240,0.5)}
+.ssel-wrap{position:relative;display:inline-block}
+.ssel-wrap select.mgr-sel{display:none!important}
+.ssel-display{width:108px;max-width:108px;box-sizing:border-box;font-size:10px;padding:5px 8px;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;color:rgba(200,212,232,0.7);user-select:none;display:block}
+.ssel-display:focus{border-color:rgba(127,163,240,0.5);outline:none}
+.ssel-panel{position:absolute;top:calc(100% + 4px);left:0;min-width:170px;max-height:280px;background:#101733;border:.5px solid rgba(255,255,255,0.1);border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,0.45);z-index:200;overflow:hidden;display:none;flex-direction:column}
+.ssel-panel.show{display:flex}
+.ssel-search-inp{width:100%;box-sizing:border-box;padding:8px 10px;font-size:11px;font-family:inherit;background:rgba(255,255,255,0.04);border:none;border-bottom:.5px solid rgba(255,255,255,0.1);color:#e8edf8;outline:none}
+.ssel-search-inp::placeholder{color:#5c6480}
+.ssel-list{overflow-y:auto;max-height:230px}
+.ssel-item{padding:8px 12px;font-size:11px;color:#c8d4e8;cursor:pointer;white-space:nowrap}
+.ssel-item:hover{background:rgba(127,163,240,0.16)}
+.ssel-item.sel{background:rgba(61,107,224,0.22);color:#fff;font-weight:600}
+.ssel-empty{padding:8px 12px;font-size:11px;color:#5c6480;font-style:italic}
+#mgr-chain-banner{position:relative;display:flex;align-items:center;padding:8px 20px;background:#14171f;border-bottom:1.5px solid rgba(127,163,240,0.35);box-shadow:inset 0 1px 0 rgba(255,255,255,0.12),0 2px 14px rgba(0,0,0,0.5);z-index:10}
+#mgr-banner-brand{display:flex;align-items:center;gap:10px;flex-shrink:0}
+#mgr-banner-logo{height:38px;width:auto;display:block;image-rendering:-webkit-optimize-contrast}
+#mgr-banner-title{font-size:15px;font-weight:800;color:#fff;letter-spacing:-.2px;line-height:1.1;white-space:nowrap}
+#mgr-banner-chain{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:24px;font-weight:800;color:#fff;letter-spacing:.4px;white-space:nowrap}
+#mgr-chain-banner-icon{font-size:21px;margin-right:7px;opacity:.9}
+#mgr-chain-banner-branch{font-size:16px;font-weight:600;color:rgba(255,255,255,0.55);letter-spacing:.2px}
+#mgr-nav-toggle{position:absolute;right:16px;bottom:-13px;width:26px;height:26px;border-radius:50%;background:#162a5e;border:1px solid rgba(127,163,240,0.5);color:rgba(255,255,255,0.85);font-size:12px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:20;box-shadow:0 2px 6px rgba(0,0,0,0.4);transition:background .15s,transform .15s}
+#mgr-nav-toggle:hover{background:#1d3476}
+.mgr-logout-btn{padding:6px 14px;background:rgba(204,30,46,0.12);border:.5px solid rgba(204,30,46,0.3);border-radius:8px;color:rgba(248,113,113,0.8);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap}
+.mgr-logout-btn:hover{background:rgba(204,30,46,0.28)}
+
+/* Content area */
+#mgr-content{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.mgr-pg{display:none;flex:1;overflow-y:auto;padding:16px 24px 32px}
+.mgr-pg.on{display:block}
+
+/* Grid layouts */
+.mgr-kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px}
+.mgr-kpi-card{background:linear-gradient(135deg,#0d1228,#111830);border-radius:14px;padding:16px 18px;border:.5px solid rgba(255,255,255,0.07);position:relative;overflow:hidden}
+.mgr-kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.mgr-kpi-card.green::before{background:linear-gradient(90deg,#1a7045,#34d27a)}
+.mgr-kpi-card.blue::before{background:linear-gradient(90deg,#1e3db5,#7fa3f0)}
+.mgr-kpi-card.amber::before{background:linear-gradient(90deg,#92400e,#f5a623)}
+.mgr-kpi-card.red::before{background:linear-gradient(90deg,#7f1d1d,#f87171)}
+.mgr-kpi-card.purple::before{background:linear-gradient(90deg,#4c1d95,#a78bfa)}
+.mgr-kpi-label{font-size:10px;color:#5c6480;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px}
+.mgr-kpi-val{font-size:26px;font-weight:800;color:#fff;line-height:1;letter-spacing:-.5px}
+.mgr-kpi-sub{font-size:11px;color:#5c6480;margin-top:5px}
+.mgr-kpi-pct{font-size:13px;font-weight:700;margin-top:4px}
+
+/* Two-column layout */
+.mgr-row2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.mgr-row3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:16px;margin-bottom:16px}
+.mgr-card{background:#0d1228;border-radius:14px;border:.5px solid rgba(255,255,255,0.07);overflow:hidden}
+.mgr-card-hdr{padding:14px 18px 10px;border-bottom:.5px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between}
+.mgr-card-title{font-size:13px;font-weight:700;color:#c8d4e8}
+.mgr-card-body{padding:14px 18px}
+
+/* Ranking table */
+.mgr-table-hdr{display:grid;grid-template-columns:28px 1fr 80px 52px 80px 52px 52px;gap:4px;padding:8px 14px;border-bottom:.5px solid rgba(255,255,255,0.07);font-size:10px;color:#4a5878;font-weight:600;letter-spacing:.5px}
+.mgr-table-row{display:grid;grid-template-columns:28px 1fr 80px 52px 80px 52px 52px;gap:4px;padding:9px 14px;border-bottom:.5px solid rgba(255,255,255,0.04);align-items:center;cursor:pointer;transition:background .12s}
+.mgr-table-row:hover{background:rgba(255,255,255,0.03)}
+.mgr-sup-row:hover{background:rgba(255,255,255,0.03);cursor:default}
+.mgr-table-row:last-child{border:none}
+
+/* Missing desktop */
+.mgr-miss-grid{display:grid;grid-template-columns:280px 1fr;gap:16px}
+.mgr-miss-left{display:flex;flex-direction:column;gap:12px}
+
+
+/* Skeleton Loading */
+@keyframes mgr-sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.mgr-sk{border-radius:6px;background:linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(255,255,255,0.10) 50%,rgba(255,255,255,0.04) 75%);background-size:200% 100%;animation:mgr-sk 1.3s infinite}
+#mgr-skeleton{display:none;position:absolute;inset:0;z-index:20;background:#070b18;overflow:hidden;padding:16px 24px}
+#mgr-skeleton.show{display:block}
+/* Scrollbar */
+.mgr-pg::-webkit-scrollbar{width:6px}
+.mgr-pg::-webkit-scrollbar-track{background:transparent}
+.mgr-pg::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:3px}
 </style>
 </head>
 <body>
@@ -316,7 +410,7 @@ select option{background:var(--bg2);color:var(--tx)}
   <div class="card">
 
     <div class="fr">
-      <label style="font-size:12px;color:var(--tx2);margin-bottom:8px">ยอดขายสะสม วันที่</label>
+      <label style="font-size:12px;color:var(--tx2);margin-bottom:8px">ยอดขายรายวัน วันที่</label>
       <div class="date-wrap">
         <input type="date" id="idate" oninput="updateTitle();onBranchChange();" style="font-size:16px;padding:14px 52px 14px 15px;font-weight:600;color:#fff">
         <button type="button" class="date-icon" onclick="(function(){var el=document.getElementById('idate');try{el.showPicker();}catch(e){el.focus();}})()">
@@ -397,7 +491,7 @@ select option{background:var(--bg2);color:var(--tx)}
     <div style="margin-bottom:14px">
       <div style="font-size:11px;color:#7fa3f0;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px">
         <span style="width:10px;height:10px;border-radius:3px;background:#34d27a;display:inline-block"></span>
-        ยอด Beger สะสม MTD (บาท)
+        ยอด Beger รายวัน (เฉพาะวันนี้) บาท
       </div>
       <div style="position:relative">
         <input type="text" inputmode="numeric" autocomplete="off" id="bBeger"
@@ -405,9 +499,9 @@ select option{background:var(--bg2);color:var(--tx)}
           oninput="fmtInput(this)"
           style="width:100%;font-size:32px;font-weight:800;text-align:center;padding:20px 15px;letter-spacing:1px;color:#34d27a;background:var(--inp);border:1.5px solid rgba(52,210,122,0.3);border-radius:var(--rs)">
         <div style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--tx3);font-weight:500;pointer-events:none">฿</div>
-        <div style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:rgba(52,210,122,0.15);border:.5px solid rgba(52,210,122,0.3);border-radius:6px;padding:3px 7px;font-size:9px;font-weight:700;color:#34d27a;letter-spacing:.5px;pointer-events:none">MTD</div>
+        <div style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:rgba(52,210,122,0.15);border:.5px solid rgba(52,210,122,0.3);border-radius:6px;padding:3px 7px;font-size:9px;font-weight:700;color:#34d27a;letter-spacing:.5px;pointer-events:none">วันนี้</div>
       </div>
-      <div style="text-align:center;font-size:10px;color:var(--tx3);margin-top:5px">⚠️ กรอกยอด<strong style="color:#f87171">สะสมตั้งแต่ต้นเดือน</strong> ถึงวันที่เลือก</div>
+      <div style="text-align:center;font-size:10px;color:var(--tx3);margin-top:5px">⚠️ กรอกยอด<strong style="color:#f87171">รายวัน เฉพาะที่ขายได้วันนี้</strong> — ไม่ใช่ยอดสะสม</div>
     </div>
 
     <!-- PC row -->
@@ -425,7 +519,7 @@ select option{background:var(--bg2);color:var(--tx)}
   </div>
 
   <div class="card">
-    <div class="sec" id="comp-sec-hdr">🎨 ยอดขายแบรนด์อื่น สะสม MTD (บาท)</div>
+    <div class="sec" id="comp-sec-hdr">🎨 ยอดขายแบรนด์อื่น รายวัน (บาท)</div>
     <!-- hidden tprev for JS compat -->
     <span id="tprev" style="display:none">0</span>
     <div class="bg" id="bi">
@@ -602,6 +696,15 @@ select option{background:var(--bg2);color:var(--tx)}
       </span>
     </div>
     <div style="position:relative;width:100%;height:210px"><canvas id="ctr"></canvas></div>
+  </div>
+
+  <div class="sec">📈 แนวโน้ม MS% เบเยอร์ รายวัน</div>
+  <div class="dark-card">
+    <div class="dark-card-title">📈 แนวโน้ม MS% เบเยอร์ รายวัน
+      <span style="margin-left:auto;font-size:9px;font-weight:500;color:var(--tx3)">เฉพาะวันที่มีข้อมูลคู่แข่ง</span>
+    </div>
+    <div style="position:relative;width:100%;height:210px"><canvas id="cms"></canvas></div>
+    <div id="cms-empty" style="display:none;color:rgba(255,255,255,0.3);font-size:12px;text-align:center;padding:40px 0">ยังไม่มีข้อมูลคู่แข่งสำหรับคำนวณ MS%<br><span style="font-size:10px;color:var(--tx3)">(กรอกยอดแบรนด์อื่นในวันเสาร์เพื่อให้กราฟแสดงผล)</span></div>
   </div>
 
   <!-- ── วิเคราะห์ช่วง 10 วัน (NEW STYLE) ── -->
@@ -878,6 +981,10 @@ function lsLogout() {
   // Close modals
   var ov = document.getElementById('overview-modal');
   if (ov) { ov.classList.remove('open'); ov.style.display='none'; }
+  var dt = document.getElementById('mgr-desktop');
+  if (dt) dt.classList.remove('open');
+  document.body.style.overflow = '';
+  document.documentElement.style.overflow = '';
   var sm = document.getElementById('save-modal');
   if (sm) sm.style.display='none';
   var successOv = document.getElementById('sm-success');
@@ -1106,6 +1213,21 @@ function lsDoMgr() {
 // ═══════════════════════════════════════════════════════
 
 const BRANDS=['Beger','Toa','ICI','Jotun','Captain','Nippon','RTB','Delta','Turbo','Pammastic','JBP','Sunke','Woodtect','Iloft','Loft8','TPI','Worldpaint'];
+
+// ── ยอดยกมา (Opening Balance) ──────────────────────────────
+// entry ที่ลงวันที่ <= วันที่กำหนด ในเดือน/ปีที่กำหนด = ยอดสะสมยกมา (ไม่นับในเฉลี่ยรายวัน/DOW/Trend แท่งรายวัน)
+// แต่ยังนับรวมใน MTD/ACH%/คาดการณ์
+// ตั้งเป็น null เพื่อปิดฟีเจอร์ (ทุก entry = รายวันปกติ)
+var OPENING_BALANCE = null; // ปิดโหมดยอดยกมา — เริ่มกรอกเป็น "ยอดรายวัน" ล้วนตั้งแต่ต้น
+// (ค่าเดิม: { year: 2026, month: 5, lastDay: 15 } = ตั้งให้ 1-15 มิ.ย. เป็นยอดยกมา)
+// helper: เช็คว่า entry เป็นยอดยกมาหรือไม่
+function isOpeningBalance(e){
+  if(!OPENING_BALANCE) return false;
+  var dt = new Date(e.d+'T00:00:00');
+  return dt.getFullYear()===OPENING_BALANCE.year
+      && dt.getMonth()===OPENING_BALANCE.month
+      && dt.getDate()<=OPENING_BALANCE.lastDay;
+}
 const COLS=['#34d27a','#2d8653','#7ec8a0','#a8dfc0','#f5a623','#e67e22','#d4750b','#5eadd4','#2980b9','#9b8fd4','#8e44ad','#5dc8b5','#16a085','#e8845c','#c0392b','#bec3c7','#7f8c8d'];
 const DOW=['จันทร์','อังคาร','พุธ','พฤหัส','ศุกร์','เสาร์','อาทิตย์'];
 
@@ -1608,7 +1730,7 @@ async function initFirebase(){
   var statusEl = document.getElementById('fb-status');
   try {
     const { initializeApp } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js');
-    const { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, query, orderBy, waitForPendingWrites } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js');
+    const { getFirestore, collection, setDoc, onSnapshot, doc, deleteDoc, writeBatch, query, orderBy, waitForPendingWrites } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js');
 
     const app = initializeApp({
       apiKey: "AIzaSyClQz6OGs5LcfM2m5M3H3SyJLcP_BxqVSQ",
@@ -1622,8 +1744,12 @@ async function initFirebase(){
 
     // ✅ ตั้งค่า _fsAdd/_fsDel ก่อน onSnapshot เพื่อให้บันทึกได้ทันที
     // _fsAdd รอ waitForPendingWrites เพื่อให้แน่ใจว่าข้อมูลถึง server จริง ไม่ใช่แค่ local cache
+    // DAILY MODEL: 1 doc per branch per date (bc_date = unique key)
+    // setDoc overwrites same branch+date entry safely
     window._fsAdd = async (entry) => {
-      const ref = await addDoc(collection(_db,'sales'), entry);
+      const docId = (entry.bc || 'x') + '_' + (entry.d || 'x');
+      const ref = doc(_db, 'sales', docId);
+      await setDoc(ref, entry);
       const syncPromise = waitForPendingWrites(_db);
       const timeoutPromise = new Promise((_,reject) =>
         setTimeout(() => reject(Object.assign(new Error('sync-timeout'), {code:'sync-timeout'})), 10000)
@@ -1632,6 +1758,21 @@ async function initFirebase(){
       return ref;
     };
     window._fsDel = (id) => deleteDoc(doc(_db,'sales',id));
+    // ลบแบบเป็นชุด (batch) — เร็วกว่าลบทีละรายการมาก, onProgress(done,total) เรียกหลังแต่ละชุด
+    window._fsBatchDel = async (ids, onProgress) => {
+      var CHUNK = 450; // < ขีดจำกัด 500 ops/batch ของ Firestore
+      var done = 0, total = ids.length;
+      for (var i = 0; i < total; i += CHUNK) {
+        var slice = ids.slice(i, i + CHUNK);
+        var batch = writeBatch(_db);
+        slice.forEach(function(id){ batch.delete(doc(_db,'sales',id)); });
+        await batch.commit();
+        done += slice.length;
+        if (typeof onProgress === 'function') onProgress(done, total);
+        await new Promise(function(r){ setTimeout(r, 0); }); // ปล่อยให้ UI หายใจ
+      }
+      return done;
+    };
     _fbReady = true; // ✅ ป้องกัน init ซ้ำ
 
     // ✅ Enable ปุ่มบันทึกทันทีที่ Firebase พร้อม
@@ -1653,7 +1794,18 @@ async function initFirebase(){
     onSnapshot(q, function(snapshot){
       SD = snapshot.docs.map(function(d){ var r=d.data(); r._id=d.id; return r; });
       renderList();
-      // refresh เมื่อ overview modal เปิดอยู่ (แดชบอร์ดใช้ .ov-pg ไม่ใช่ .pg)
+      // refresh Desktop Dashboard ถ้าเปิดอยู่
+      var dt=document.getElementById('mgr-desktop');
+      if(dt&&dt.classList.contains('open')){
+        // ซ่อน skeleton เมื่อข้อมูลมาแล้ว
+        var sk=document.getElementById('mgr-skeleton');
+        if(sk&&SD&&SD.length>0) sk.classList.remove('show');
+        if(typeof mgrPopulateSups==='function') mgrPopulateSups();
+        if(typeof mgrRefresh==='function') mgrRefresh();
+        if(_mgrTab==='missing'&&typeof mgrMissRefresh==='function') mgrMissRefresh();
+        if(typeof mgrUpdateTimestamp==='function') mgrUpdateTimestamp();
+      }
+      // refresh mobile modal ถ้าเปิดอยู่
       var ov=document.getElementById('overview-modal');
       if(ov&&ov.classList.contains('open')){
         var ovPg=document.querySelector('.ov-pg.on');
@@ -1896,16 +2048,71 @@ function saveE(){
   var existEntry=SD.filter(function(e){return e.bc===bc&&e.ch===ch&&e.d===d;});
   _pendingIsUpdate=existEntry.length>0; // flag ให้ modal แสดง badge "แก้ไข"
 
-  // คำนวณข้อมูลสรุป
+  // คำนวณข้อมูลสรุป (DAILY MODEL)
   var begerToday=br['Beger']||0;
   var dt=new Date(d+'T00:00:00');
   var dayN=dt.getDate();
   var dim=new Date(dt.getFullYear(),dt.getMonth()+1,0).getDate();
-  // MTD: begerToday คือยอดสะสมแล้ว ไม่ต้องบวก entry ก่อนหน้า
-  var cumSoFar=begerToday;
+  var curMonth=dt.getMonth(), curYear=dt.getFullYear();
+  // MTD = sum ยอดวันก่อนหน้าทั้งหมดในเดือนนี้ + ยอดวันนี้ที่กำลังจะบันทึก
+  var prevSum=SD.filter(function(e){
+    if(e.bc!==bc) return false;
+    if(e.d===d) return false; // ยกเว้นวันที่กำลังบันทึก (จะ overwrite)
+    var ed=new Date(e.d+'T00:00:00');
+    return ed.getMonth()===curMonth && ed.getFullYear()===curYear;
+  }).reduce(function(a,e){ return a+((e.br&&e.br['Beger'])||0); },0);
+  var cumSoFar=prevSum+begerToday;
+
+  // ── ตัวเตือนกันกรอก "ยอดสะสม" ผิด (daily-entry guard) ──
+  // ถ้ายอดวันนี้สูงผิดปกติเมื่อเทียบกับค่าเฉลี่ยรายวันก่อนหน้าของสาขานี้ → น่าจะเผลอกรอกยอดสะสม
+  var _prevDaily=SD.filter(function(e){
+    if(e.bc!==bc||e.d===d) return false;
+    var ed=new Date(e.d+'T00:00:00');
+    return ed.getMonth()===curMonth && ed.getFullYear()===curYear && e.br && e.br['Beger']>0;
+  });
+  if(_prevDaily.length>=3 && begerToday>0){
+    var _avgPrev=prevSum/_prevDaily.length;
+    if(_avgPrev>0 && begerToday>_avgPrev*4){
+      var _ok=confirm(
+        'ยอด Beger ที่กรอกวันนี้ = ฿'+Math.round(begerToday).toLocaleString()+'\n'+
+        'ค่าเฉลี่ยยอดรายวันก่อนหน้าของสาขานี้ ≈ ฿'+Math.round(_avgPrev).toLocaleString()+' ต่อวัน\n\n'+
+        'ตัวเลขนี้สูงผิดปกติ — แน่ใจว่าเป็น "ยอดรายวัน" (เฉพาะวันนี้) ไม่ใช่ "ยอดสะสม" ใช่ไหม?\n\n'+
+        'OK = ใช่ ยอดรายวัน    Cancel = กลับไปแก้ไข'
+      );
+      if(!_ok){
+        if(begerEl){ begerEl.style.borderColor='rgba(245,166,35,0.9)'; begerEl.style.boxShadow='0 0 0 3px rgba(245,166,35,0.25)'; begerEl.focus(); begerEl.scrollIntoView({behavior:'smooth',block:'center'}); }
+        return;
+      }
+    }
+  }
   var pct=tg>0?Math.round(cumSoFar/tg*100):0;
   var pctCol=pct>=100?'#34d27a':pct>=70?'#f5a623':'#e74c3c';
-  var forecast=dayN>0?Math.round(cumSoFar/dayN*dim):cumSoFar;
+  // คาดการณ์: รองรับยอดยกมา (เฉลี่ยจากวันรายวันจริง ไม่รวมยอดยกมา)
+  var forecast;
+  if(OPENING_BALANCE && curMonth===OPENING_BALANCE.month && curYear===OPENING_BALANCE.year){
+    // แยกยอดยกมาของสาขานี้
+    var obSum=SD.filter(function(e){
+      if(e.bc!==bc) return false;
+      if(e.d===d) return false;
+      return isOpeningBalance(e);
+    }).reduce(function(a,e){ return a+((e.br&&e.br['Beger'])||0); },0);
+    // วันรายวันจริง (รวมวันนี้ถ้าไม่ใช่ยอดยกมา)
+    var dailyDaysSet={};
+    SD.filter(function(e){ return e.bc===bc && e.d!==d && !isOpeningBalance(e); var ed=new Date(e.d+'T00:00:00'); })
+      .forEach(function(e){ var ed=new Date(e.d+'T00:00:00'); if(ed.getMonth()===curMonth&&ed.getFullYear()===curYear) dailyDaysSet[e.d]=true; });
+    var todayIsOpen = (dayN<=OPENING_BALANCE.lastDay);
+    if(!todayIsOpen) dailyDaysSet[d]=true;
+    var nDaily=Object.keys(dailyDaysSet).length;
+    var dailySum=cumSoFar-obSum-(todayIsOpen?begerToday:0);
+    if(!todayIsOpen) dailySum=cumSoFar-obSum;
+    if(nDaily>0){
+      forecast=Math.round((obSum+(todayIsOpen?begerToday:0)) + (dailySum/nDaily)*(dim-OPENING_BALANCE.lastDay));
+    } else {
+      forecast=cumSoFar;
+    }
+  } else {
+    forecast=dayN>0?Math.round(cumSoFar/dayN*dim):cumSoFar;
+  }
   var achForecast=tg>0?Math.round(forecast/tg*100):0;
   var achForecastCol=achForecast>=100?'#34d27a':achForecast>=80?'#f5a623':'#e74c3c';
 
@@ -1928,15 +2135,66 @@ function saveE(){
       '<div style="color:#fff;font-size:14px;font-weight:700">'+(bn||bc)+'</div>'+
       '<div style="color:var(--ac3);font-size:11px;margin-top:2px">'+esc(ch)+' · '+esc(pv)+' · '+dateStr+'</div>'+
     '</div>'+
-    '<div style="text-align:right"><div style="color:#34d27a;font-size:18px;font-weight:700">'+fK(begerToday)+'</div>'+
-    '<div style="color:var(--ac3);font-size:10px">Beger วันนี้</div></div></div>';
+    '<div style="text-align:right">'+
+    '<div style="color:#34d27a;font-size:18px;font-weight:700">'+fK(begerToday)+'</div>'+
+    '<div style="color:var(--ac3);font-size:10px">ยอดขายวันนี้</div>'+
+    '<div style="color:#7fa3f0;font-size:11px;font-weight:700;margin-top:2px">MTD: '+fK(cumSoFar)+'</div>'+
+    '</div></div>';
 
   var lbEl=document.getElementById('sm-today-label');
-  if(lbEl) lbEl.textContent='Beger สะสม 1–'+dayN+' '+new Date(d+'T00:00:00').toLocaleDateString('th-TH',{month:'short'});
+  if(lbEl) lbEl.textContent='MTD สะสม 1–'+dayN+' '+new Date(d+'T00:00:00').toLocaleDateString('th-TH',{month:'short'});
   var smToday=document.getElementById('sm-today'); if(smToday) smToday.textContent=fK(cumSoFar);
   var smPct=document.getElementById('sm-pct'); if(smPct) smPct.innerHTML='<span style="color:'+pctCol+'">'+pct+'%</span>';
   var smForecast=document.getElementById('sm-forecast'); if(smForecast) smForecast.textContent=fK(forecast);
   var smAch=document.getElementById('sm-ach-forecast'); if(smAch) smAch.innerHTML='<span style="color:'+achForecastCol+'">'+achForecast+'%</span>';
+
+  // ── วันขาดส่งเดือนนี้ (DAILY MODEL) ──
+  (function(){
+    var today=new Date();
+    var entryDt=new Date(d+'T00:00:00');
+    var ym=entryDt.getFullYear()+'-'+String(entryDt.getMonth()+1).padStart(2,'0');
+    // วันที่ผ่านมาแล้วในเดือนนี้ (ถึงวันของ entry)
+    var daysInSoFar=entryDt.getDate();
+    var sentDates=new Set(
+      SD.filter(function(e){ return e.bc===bc && e.d.indexOf(ym)===0; })
+        .map(function(e){ return e.d; })
+    );
+    // เพิ่มวันที่กำลังบันทึกอยู่เข้า set (จะถือว่า "ส่งแล้ว")
+    sentDates.add(d);
+    var thMonth=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+    // เริ่มเช็ควันขาดส่งจากวันถัดจากยอดยกมา (ถ้าเดือนนี้มียอดยกมา)
+    var startCheck=1;
+    if(OPENING_BALANCE
+       && entryDt.getFullYear()===OPENING_BALANCE.year
+       && entryDt.getMonth()===OPENING_BALANCE.month){
+      startCheck=OPENING_BALANCE.lastDay+1; // ข้ามวัน 1-15
+    }
+    var missingDays=[];
+    for(var i=startCheck;i<daysInSoFar;i++){
+      var ds=entryDt.getFullYear()+'-'+String(entryDt.getMonth()+1).padStart(2,'0')+'-'+String(i).padStart(2,'0');
+      if(!sentDates.has(ds)){
+        var dd2=new Date(ds+'T00:00:00');
+        var dow=['อา','จ','อ','พ','พฤ','ศ','ส'][dd2.getDay()];
+        missingDays.push({ds:ds,label:dow+' '+i});
+      }
+    }
+    var panel=document.getElementById('sm-missing-days');
+    var listEl=document.getElementById('sm-missing-list');
+    var cntEl=document.getElementById('sm-missing-count');
+    if(panel&&listEl&&cntEl){
+      if(missingDays.length>0){
+        panel.style.display='flex';
+        cntEl.textContent=missingDays.length+' วัน';
+        // แสดงเฉพาะเลขวันที่ คั่นด้วย comma — กดทั้งบรรทัดเพื่อย้อนกรอกวันแรกที่ขาด
+        var dayNums=missingDays.map(function(m){ return parseInt(m.ds.split('-')[2]); });
+        listEl.textContent='วันที่ '+dayNums.join(', ');
+        listEl.setAttribute('title','แตะเพื่อย้อนกรอกวันแรกที่ขาด ('+missingDays[0].ds+')');
+        listEl.onclick=function(){ fillMissingDay(missingDays[0].ds); };
+      } else {
+        panel.style.display='none';
+      }
+    }
+  })();
 
   // Alert banner + effects
   var alertEl=document.getElementById('sm-alert');
@@ -2109,18 +2367,52 @@ function renderList(){
   // ข้อมูลอัปเดตผ่าน Firestore onSnapshot อัตโนมัติ
 }
 
+// ── fillMissingDay: ปิด save modal แล้วตั้งค่าวันที่ให้กรอกย้อนหลัง ──
+function fillMissingDay(dateStr){
+  closeSaveModal();
+  var di=document.getElementById('idate');
+  if(di){
+    di.value=dateStr;
+    updateTitle();
+    // scroll กลับไปยังฟอร์ม
+    di.scrollIntoView({behavior:'smooth',block:'center'});
+    toast('📅 เลือกวัน '+dateStr+' แล้ว — กรอกยอดขายวันนั้นได้เลย','ok');
+  }
+}
+
 
 // ── Dashboard ─────────────────────────────────────────
-var cS=null,cD=null,cW=null,cP=null,cTr=null,cChain=null;
+var cS=null,cD=null,cW=null,cP=null,cTr=null,cChain=null,cMs=null;
 
-// ── MTD helper: คืน entry ล่าสุดต่อสาขา (data model = ยอดสะสม MTD) ──
-function latestMTD(entries){
+// ── DAILY MODEL helpers ──
+// sumByBranch: รวมยอดรายวันทุกวัน → คืน virtual "entry" ต่อสาขา (MTD sum)
+function sumByBranch(entries){
   var map={};
   entries.forEach(function(e){
-    if(!map[e.bc]||e.d>map[e.bc].d) map[e.bc]=e;
+    var bc=e.bc;
+    if(!map[bc]){
+      // clone structure จาก entry แรกของสาขา
+      map[bc]={bc:bc,ch:e.ch,bn:e.bn,pv:e.pv,tg:e.tg,ps:e.ps,rg:e.rg,pc:e.pc,pcpromo:e.pcpromo,d:e.d,br:{}};
+    }
+    // update meta จาก entry ล่าสุด
+    if(e.d>map[bc].d){
+      map[bc].d=e.d;
+      if(e.tg) map[bc].tg=e.tg;
+      if(e.ps) map[bc].ps=e.ps;
+      if(e.pc!=null) map[bc].pc=e.pc;
+      if(e.pcpromo!=null) map[bc].pcpromo=e.pcpromo;
+    }
+    // SUM ยอดรายวัน Beger
+    if(e.br){
+      Object.keys(e.br).forEach(function(b){
+        map[bc].br[b]=(map[bc].br[b]||0)+e.br[b];
+      });
+    }
   });
   return Object.values(map);
 }
+// latestMTD — alias เดิมสำหรับ backward compat (ใช้ sumByBranch แทน)
+function latestMTD(entries){ return sumByBranch(entries); }
 
 // ── Brand/MS% helper: ใช้ entry ที่มีข้อมูลคู่แข่ง (วันเสาร์) ล่าสุด ──
 // ป้องกัน MS% = 100% เมื่อ latest entry เป็นวันธรรมดา (ไม่มีคู่แข่ง)
@@ -2175,7 +2467,7 @@ function populatePcSup(){
 }
 
 function rd(){
-  cS=null;cD=dc(cD);cW=dc(cW);cP=dc(cP);cTr=dc(cTr);
+  cS=null;cD=dc(cD);cW=dc(cW);cP=dc(cP);cTr=dc(cTr);cMs=dc(cMs);
   populatePcSup();
   var data=getF();
   var empty='<div style="color:var(--tx3);text-align:center;padding:14px;font-size:12px">ไม่มีข้อมูล</div>';
@@ -2219,8 +2511,15 @@ function rd(){
   var pct=totT>0?totS/totT*100:0;
   var daysInMonth=new Date(refYear,refMonth+1,0).getDate();
   var daysPassed=maxDate.getDate(); // วันที่ล่าสุดในเดือนนั้น
-  var avg=daysPassed>0?totS/daysPassed:0;
-  var fore=avg*daysInMonth;
+  // เฉลี่ย/วัน: ข้ามยอดยกมา
+  var _dOnlySum=0,_dOnlyDays={};
+  scopedData.forEach(function(e){ if(isOpeningBalance(e))return; _dOnlySum+=(e.br&&e.br['Beger'])||0; _dOnlyDays[e.d]=true; });
+  var _nDOnly=Object.keys(_dOnlyDays).length;
+  var avg=_nDOnly>0?_dOnlySum/_nDOnly:(daysPassed>0?totS/daysPassed:0);
+  var _openSum=totS-_dOnlySum;
+  var fore;
+  if(OPENING_BALANCE&&_nDOnly>0){ fore=_openSum+avg*(daysInMonth-OPENING_BALANCE.lastDay); }
+  else { fore=avg*daysInMonth; }
 
   document.getElementById('k1').textContent=fK(totS);
   document.getElementById('k2').textContent=fK(totT);
@@ -2239,19 +2538,15 @@ function rd(){
   document.getElementById('k5bar').className='pf'+(forePct>100?' ov':'');
   document.getElementById('k5s').textContent=forePct>=100?'✓ คาดว่าจะปิดเป้าได้':'ยังขาดอีก '+fK(totT-fore)+' จากเป้า';
 
-  // MTD period: หาล่าสุดต่อสาขาในแต่ละช่วง แล้วลบกัน
-  // FIX B: ใช้ scopedData (เดือนเดียวกับ maxDate) ป้องกัน cross-month
+  // Period cards (DAILY MODEL) — sum ยอดรายวันในแต่ละช่วงได้เลย
   var p1=0,p2=0,p3=0;
-  (function(){
-    var d10=latestMTD(scopedData.filter(function(e){return new Date(e.d+'T00:00:00').getDate()<=10;}));
-    var d20=latestMTD(scopedData.filter(function(e){return new Date(e.d+'T00:00:00').getDate()<=20;}));
-    var s10=d10.reduce(function(a,e){return a+((e.br&&e.br['Beger'])||0);},0);
-    var s20=d20.reduce(function(a,e){return a+((e.br&&e.br['Beger'])||0);},0);
-    p1=s10;
-    p2=s20-s10;
-    p3=totS-s20;
-    if(p2<0)p2=0; if(p3<0)p3=0;
-  })();
+  scopedData.forEach(function(e){
+    var dayNum=new Date(e.d+'T00:00:00').getDate();
+    var v=(e.br&&e.br['Beger'])||0;
+    if(dayNum<=10) p1+=v;
+    else if(dayNum<=20) p2+=v;
+    else p3+=v;
+  });
   var maxP=Math.max(p1,p2,p3);
   // Render new period cards UI
   renderPeriodCards(p1,p2,p3,maxP);
@@ -2360,27 +2655,25 @@ function rd(){
   var byD={};
   sD.forEach(function(d){byD[d]={s:0,t:0};});
 
-  // ── Trend cumulative line ─────────────────────────────
-  // FIX: carry-forward ที่ถูกต้อง — วน loop ทีละวัน สร้าง latestByBc สะสมไปเรื่อยๆ
-  // ไม่ precompute overall latest เพราะจะทำให้ทุกวัน "เห็น" entry ล่าสุดทันที
+  // ── Trend cumulative line (DAILY MODEL) ──────────────
+  // รวมยอดรายวันสะสมไปเรื่อยๆ — sum ทุก entry จริง ไม่ต้อง carry-forward
   var byDLatest={};
   (function(){
+    // cumSum ต่อวัน = sum ยอด Beger ของทุก entry ที่ d <= วันนั้น
+    var runSum=0, runTgt=0;
+    // เก็บ tg ล่าสุดต่อสาขาเพื่อใช้คำนวณ target สะสม
+    var tgByBc={};
     var dataSorted=scopedData.slice().sort(function(a,b){return a.d<b.d?-1:1;});
-    var latestByBc={};
     var dataIdx=0;
     sD.forEach(function(day){
-      // เพิ่ม entry ทั้งหมดที่ d <= day สะสมไปเรื่อยๆ
       while(dataIdx<dataSorted.length && dataSorted[dataIdx].d<=day){
         var e=dataSorted[dataIdx];
-        if(!latestByBc[e.bc]||e.d>=latestByBc[e.bc].d) latestByBc[e.bc]=e;
+        runSum+=(e.br&&e.br['Beger'])||0;
+        if(e.tg&&!tgByBc[e.bc]) tgByBc[e.bc]=e.tg; // เก็บครั้งแรก
         dataIdx++;
       }
-      var sumS=0, sumT=0;
-      Object.values(latestByBc).forEach(function(e){
-        sumS+=(e.br&&e.br['Beger'])||0;
-        sumT+=e.tg||0;
-      });
-      byDLatest[day]={s:sumS, t:sumT};
+      var sumT=Object.values(tgByBc).reduce(function(a,v){return a+v;},0);
+      byDLatest[day]={s:runSum, t:sumT};
     });
   })();
   var cumSales=sD.map(function(d){return Math.round((byDLatest[d]||byD[d]).s);});
@@ -2418,23 +2711,80 @@ function rd(){
     }
   });
 
-  // ── Day of week bar (NEW UI) ──────────────────────────
-  // FIX: คำนวณยอดรายวัน = MTD วันนี้ - MTD วันก่อนหน้า (daily delta)
-  // byDLatest[d].s คือยอด MTD สะสม → ต้องลบวันก่อนหน้าออกเพื่อได้ยอดรายวัน
-  var dT=[0,0,0,0,0,0,0],dC=[0,0,0,0,0,0,0];
-  sD.forEach(function(d, i){
-    var curMTD=(byDLatest[d]&&byDLatest[d].s!=null)?byDLatest[d].s:(byD[d]?byD[d].s:0);
-    var prevMTD=0;
-    if(i>0){
-      var prevD=sD[i-1];
-      prevMTD=(byDLatest[prevD]&&byDLatest[prevD].s!=null)?byDLatest[prevD].s:(byD[prevD]?byD[prevD].s:0);
+  // ── MS% Beger daily trend ──────────────────────────────
+  // MS% = ยอด Beger / ยอดรวมทุกแบรนด์ ในแต่ละวัน
+  // ใช้เฉพาะ entry ที่มีข้อมูลคู่แข่ง (>1 แบรนด์ = วันเสาร์) เพื่อไม่ให้วันธรรมดากลายเป็น 100%
+  (function(){
+    var cmsEl=document.getElementById('cms');
+    var cmsEmpty=document.getElementById('cms-empty');
+    if(!cmsEl) return;
+    var msByDate={}; // d -> {beger, all}
+    scopedData.forEach(function(e){
+      if(!e.br) return;
+      if(Object.keys(e.br).length<=1) return; // ข้ามวันที่ไม่มีคู่แข่ง
+      if(!msByDate[e.d]) msByDate[e.d]={beger:0, all:0};
+      Object.keys(e.br).forEach(function(b){
+        var v=e.br[b]||0;
+        msByDate[e.d].all+=v;
+        if(b==='Beger') msByDate[e.d].beger+=v;
+      });
+    });
+    var msDates=Object.keys(msByDate).filter(function(d){return msByDate[d].all>0;}).sort();
+    if(msDates.length===0){
+      cmsEl.style.display='none';
+      if(cmsEmpty) cmsEmpty.style.display='block';
+      return;
     }
-    // FIX C: ถ้าข้ามเดือน (MTD reset) ให้ถือว่า curMTD คือยอดรายวันทั้งหมด
-    var dCur=new Date(d+'T00:00:00'), dPrev=i>0?new Date(sD[i-1]+'T00:00:00'):null;
-    var monthBoundary=dPrev&&(dCur.getMonth()!==dPrev.getMonth()||dCur.getFullYear()!==dPrev.getFullYear());
-    var dailyVal=monthBoundary?curMTD:(curMTD-prevMTD);
-    if(dailyVal<0) dailyVal=0;
-    var dw=new Date(d+'T00:00:00').getDay();var idx=dw===0?6:dw-1;
+    cmsEl.style.display='';
+    if(cmsEmpty) cmsEmpty.style.display='none';
+    var msVals=msDates.map(function(d){return +(msByDate[d].beger/msByDate[d].all*100).toFixed(1);});
+    var msLbls=msDates.map(function(d){var dt=new Date(d+'T00:00:00');return dt.getDate()+'/'+(dt.getMonth()+1);});
+    // จุดสีตามระดับ MS% (>=40 เขียว, >=25 เหลือง, <25 แดง)
+    var msPtCols=msVals.map(function(v){return v>=40?'#34d27a':v>=25?'#fbbf24':'#f87171';});
+    cMs=new Chart(cmsEl.getContext('2d'),{
+      type:'line',
+      data:{labels:msLbls,datasets:[{
+        label:'MS% เบเยอร์',data:msVals,
+        borderColor:'#3d6be0',
+        backgroundColor:'rgba(61,107,224,0.12)',
+        borderWidth:2.5,
+        pointRadius:msVals.length>1?4:5,
+        pointBackgroundColor:msPtCols,
+        pointBorderColor:'#0f1428',pointBorderWidth:2,
+        fill:true,tension:.3,
+        spanGaps:true
+      }]},
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        plugins:{
+          legend:{display:false},
+          tooltip:{callbacks:{label:function(ctx){return ' MS% '+ctx.parsed.y+'%';}}}
+        },
+        scales:{
+          x:{
+            ticks:{color:'#8893b0',font:{size:9},autoSkip:true,maxTicksLimit:12},
+            grid:{color:'rgba(61,107,224,0.06)'},
+            border:{color:'rgba(61,107,224,0.12)'}
+          },
+          y:{
+            beginAtZero:false,
+            ticks:{color:'#8893b0',font:{size:9},callback:function(v){return v+'%';}},
+            grid:{color:'rgba(61,107,224,0.06)'},
+            border:{color:'rgba(61,107,224,0.12)'}
+          }
+        }
+      }
+    });
+  })();
+
+  // ── Day of week bar (DAILY MODEL) ──────────────────────
+  // แต่ละ entry คือยอดรายวันจริง → sum ตาม DOW (ข้ามยอดยกมา)
+  var dT=[0,0,0,0,0,0,0],dC=[0,0,0,0,0,0,0];
+  scopedData.forEach(function(e){
+    if(isOpeningBalance(e)) return; // ข้ามยอดยกมา
+    var dailyVal=(e.br&&e.br['Beger'])||0;
+    var dw=new Date(e.d+'T00:00:00').getDay();
+    var idx=dw===0?6:dw-1;
     dT[idx]+=dailyVal; dC[idx]++;
   });
   // dA = ยอดรายวันเฉลี่ย (กรณีมีหลายสัปดาห์)
@@ -2463,14 +2813,28 @@ function rd(){
       if(msEntry.br){Object.values(msEntry.br).forEach(function(v){chData[e.ch].tot+=v;});}
     }
   });
+  // แยกยอดยกมา + วันรายวันจริง ต่อ chain (จาก raw scopedData)
+  CHAINS.forEach(function(c){ if(chData[c]){chData[c].open=0;chData[c].dDays={};} });
+  scopedData.forEach(function(e){
+    if(!chData[e.ch]) return;
+    if(isOpeningBalance(e)){ chData[e.ch].open+=(e.br&&e.br['Beger'])||0; }
+    else { chData[e.ch].dDays[e.d]=true; }
+  });
   var activeCh=CHAINS.filter(function(c){return chData[c]&&chData[c].days.size>0;});
 
-  // compute forecast per chain: reuse maxDate/daysPassed/daysInMonth ที่คำนวณไว้แล้ว
+  // compute forecast per chain — รองรับยอดยกมา
   var chainDaysInMonth=daysInMonth;
   var chainDaysPassed=daysPassed;
+  var _obMobileChain = OPENING_BALANCE && refMonth===OPENING_BALANCE.month && refYear===OPENING_BALANCE.year;
   activeCh.forEach(function(c){
     var d=chData[c];
-    d.fore=Math.round((d.s/chainDaysPassed)*chainDaysInMonth);
+    if(_obMobileChain){
+      var nD=Object.keys(d.dDays).length;
+      var dailyS=d.s-d.open;
+      d.fore = nD>0 ? Math.round(d.open+(dailyS/nD)*(chainDaysInMonth-OPENING_BALANCE.lastDay)) : d.s;
+    } else {
+      d.fore=Math.round((d.s/chainDaysPassed)*chainDaysInMonth);
+    }
     d.forePct=d.t>0?(d.fore/d.t*100):0;
     d.achPct=d.t>0?(d.s/d.t*100):0;
     d.msPct=d.tot>0?(d.s/d.tot*100):0;
@@ -2560,16 +2924,33 @@ function renderSupSummary(data) {
   // MTD: ใช้ entry ล่าสุดต่อสาขาสำหรับยอด/เป้า/branches
   var supLwbMap={};
   latestWithBrands(data).forEach(function(e){ supLwbMap[e.bc]=e; });
-  latestMTD(data).forEach(function(e) {
+  // DAILY MODEL: sum ทุก entry ต่อ sup โดยตรง
+  data.forEach(function(e) {
     var sup = e.ps || 'ไม่ระบุ';
-    if (!supMap[sup]) supMap[sup] = { s: 0, t: 0, tot: 0, days: new Set(), branches: new Set() };
+    if (!supMap[sup]) supMap[sup] = { s: 0, t: 0, tot: 0, days: new Set(), branches: new Set(), _tgByBc: {} };
     var beger = (e.br && e.br['Beger']) ? e.br['Beger'] : 0;
-    supMap[sup].s   += beger;
-    supMap[sup].t   += e.tg || 0;
+    supMap[sup].s += beger;
+    // target: เก็บครั้งเดียวต่อสาขา (ไม่บวกซ้ำ)
+    if(!supMap[sup]._tgByBc[e.bc]){
+      supMap[sup]._tgByBc[e.bc]=e.tg||0;
+      supMap[sup].t += e.tg || 0;
+    }
     supMap[sup].branches.add((e.ch||'') + '__' + (e.bc||''));
-    // FIX: ใช้ entry เสาร์ (latestWithBrands) สำหรับ tot (MS%) ไม่ใช่ entry วันธรรมดา
-    var msE = supLwbMap[e.bc] || e;
-    if (msE.br) Object.values(msE.br).forEach(function(v) { supMap[sup].tot += v; });
+    // tot MS% — ใช้ entry เสาร์ (latestWithBrands) ต่อสาขา ไม่ใช่ทุกวัน
+    var msE = supLwbMap[e.bc];
+    if(msE && !supMap[sup]._msAdded) {
+      // ยังไม่มี guard per bc — ต้องแยก per bc
+    }
+  });
+  // tot ของ MS%: ใช้ latestWithBrands per bc (นับ 1 ครั้งต่อสาขา)
+  var _supTotAdded = {};
+  latestWithBrands(data).forEach(function(e){
+    var sup = e.ps || 'ไม่ระบุ';
+    if(!supMap[sup]) return;
+    if(!_supTotAdded[e.bc]){
+      _supTotAdded[e.bc]=true;
+      if(e.br) Object.values(e.br).forEach(function(v){ supMap[sup].tot += v; });
+    }
   });
 
   // คำนวณ forecast + MS%
@@ -2661,27 +3042,40 @@ function doExport(){
       branchMonthMap[bmKey]={
         totalBeger:0, days:new Set(),
         month:dt.getMonth(), year:dt.getFullYear(),
-        tg:e.tg||0
+        tg:e.tg||0, latestDate:''
       };
     }
-    // MTD FIX: ใช้ entry ล่าสุดต่อสาขาต่อเดือน ไม่ sum ทุก entry
-    var latestSoFar=branchMonthMap[bmKey].latestDate||'';
-    if(!latestSoFar||e.d>=latestSoFar){
-      branchMonthMap[bmKey].totalBeger=(e.br&&e.br['Beger'])?e.br['Beger']:0;
-      branchMonthMap[bmKey].latestDate=e.d;
-    }
+    // DAILY MODEL: sum ทุก entry ต่อสาขาต่อเดือน
+    branchMonthMap[bmKey].totalBeger += (e.br&&e.br['Beger']) ? e.br['Beger'] : 0;
     branchMonthMap[bmKey].days.add(e.d);
+    // แยกยอดยกมา + วันรายวันจริง
+    if(!branchMonthMap[bmKey].openBeger) branchMonthMap[bmKey].openBeger=0;
+    if(!branchMonthMap[bmKey].dDays) branchMonthMap[bmKey].dDays={};
+    if(isOpeningBalance(e)){ branchMonthMap[bmKey].openBeger += (e.br&&e.br['Beger'])||0; }
+    else { branchMonthMap[bmKey].dDays[e.d]=true; }
+    // update tg และ latestDate จาก entry ล่าสุด
+    if(e.d >= branchMonthMap[bmKey].latestDate){
+      branchMonthMap[bmKey].latestDate = e.d;
+      if(e.tg) branchMonthMap[bmKey].tg = e.tg;
+    }
   });
-  // คำนวณ forecast แต่ละ key — ใช้วันที่สูงสุดในเดือนนั้นๆ เป็นตัวหาร
+  // คำนวณ forecast แต่ละ key — รองรับยอดยกมา
   var forecastMap={};
   Object.keys(branchMonthMap).forEach(function(bmKey){
     var bm=branchMonthMap[bmKey];
     var daysInMonth=new Date(bm.year,bm.month+1,0).getDate();
-    // หา max day ในเดือนนั้นของสาขานั้น
-    var maxDay=0;
-    bm.days.forEach(function(dateStr){var d=new Date(dateStr+'T00:00:00').getDate();if(d>maxDay)maxDay=d;});
-    var nDays=maxDay||1;
-    var fore=Math.round((bm.totalBeger/nDays)*daysInMonth);
+    var fore;
+    var isOb = OPENING_BALANCE && bm.month===OPENING_BALANCE.month && bm.year===OPENING_BALANCE.year;
+    if(isOb){
+      var nDaily=Object.keys(bm.dDays).length;
+      var dailyBeger=bm.totalBeger-(bm.openBeger||0);
+      fore = nDaily>0 ? Math.round((bm.openBeger||0)+(dailyBeger/nDaily)*(daysInMonth-OPENING_BALANCE.lastDay)) : bm.totalBeger;
+    } else {
+      var maxDay=0;
+      bm.days.forEach(function(dateStr){var d=new Date(dateStr+'T00:00:00').getDate();if(d>maxDay)maxDay=d;});
+      var nDays=maxDay||1;
+      fore=Math.round((bm.totalBeger/nDays)*daysInMonth);
+    }
     var forePct=bm.tg>0?Math.round(fore/bm.tg*100):0;
     forecastMap[bmKey]={fore:fore, forePct:forePct};
   });
@@ -2782,6 +3176,10 @@ function resetFilter() {
 
 // ── เปิดแดชบอร์ดโดยตรง (ไม่ต้อง PIN, ไม่รอ Firebase) ──
 function lsOpenDashboard() {
+  // Manager/Supervisor → Desktop Dashboard
+  lsOpenDesktop();
+  return;
+  // (legacy mobile path below — unused for manager)
   // ── ซ่อนหน้ากรอกยอดขายสำหรับ Manager / Supervisor ──
   lsHideEntryPage();
 
@@ -3346,18 +3744,32 @@ function rt(){
     var d=new Date(e.d+'T00:00:00'); return d.getMonth()===rtMaxDate.getMonth()&&d.getFullYear()===rtMaxDate.getFullYear();
   });
 
-  // Aggregate by branch — MTD: ใช้ entry ล่าสุดต่อสาขา
-  // FIX: นับ days จาก rtScopedData ทั้งหมด (ไม่ใช่แค่ latestMTD) เพื่อให้ได้จำนวนวันที่บันทึกจริง
+  // DAILY MODEL: aggregate by branch — sum ทุก daily entry
   var byB={};
-  var allDaysByBc={};
-  rtScopedData.forEach(function(e){ if(!allDaysByBc[e.bc]) allDaysByBc[e.bc]=new Set(); allDaysByBc[e.bc].add(e.d); });
-  latestMTD(rtScopedData).forEach(function(e){
-    if(!byB[e.bc]){
-      byB[e.bc]={bn:e.bn,ch:e.ch,bc:e.bc,ps:e.ps,rg:e.rg,tg:e.tg,tot:0,br:{},days:allDaysByBc[e.bc]||new Set(),pc:0};
+  rtScopedData.forEach(function(e){
+    var bc=e.bc;
+    if(!byB[bc]){
+      byB[bc]={bn:e.bn,ch:e.ch,bc:bc,ps:e.ps,rg:e.rg,tg:e.tg,tot:0,br:{},days:new Set(),pc:0,openBeger:0,dailyDays:new Set()};
     }
-    byB[e.bc].tot=e.tot;
-    if(e.pc) byB[e.bc].pc=e.pc;
-    if(e.br) Object.keys(e.br).forEach(function(b){byB[e.bc].br[b]=e.br[b]||0;});
+    // update meta จาก entry ล่าสุด
+    if(e.d>=(byB[bc]._lastD||'')){
+      byB[bc]._lastD=e.d;
+      if(e.tg) byB[bc].tg=e.tg;
+      if(e.ps) byB[bc].ps=e.ps;
+      if(e.pc!=null) byB[bc].pc=e.pc;
+    }
+    byB[bc].days.add(e.d);
+    // แยกยอดยกมา vs รายวันจริง
+    var ob=isOpeningBalance(e);
+    if(ob){ byB[bc].openBeger+=(e.br&&e.br['Beger'])||0; }
+    else { byB[bc].dailyDays.add(e.d); }
+    // sum brand values รายวัน
+    var dailyTotal=0;
+    if(e.br) Object.keys(e.br).forEach(function(b){
+      byB[bc].br[b]=(byB[bc].br[b]||0)+(e.br[b]||0);
+      dailyTotal+=e.br[b]||0;
+    });
+    byB[bc].tot+=dailyTotal;
   });
 
   var rows=Object.values(byB).sort(function(a,b){
@@ -3377,7 +3789,22 @@ function rt(){
   var foreMonth=tmVal!==''?parseInt(tmVal):maxDateAll.getMonth();
   var foreDaysInMonth=new Date(maxDateAll.getFullYear(),foreMonth+1,0).getDate();
   var daysPassedAll=maxDateAll.getDate();
-  var foreAll=rows.reduce(function(a,r){return a+((r.br['Beger']||0)/daysPassedAll*foreDaysInMonth);},0);
+  // คาดการณ์: ถ้ามียอดยกมา → opening + เฉลี่ยรายวัน × วันเหลือ
+  var _obActive = OPENING_BALANCE && foreMonth===OPENING_BALANCE.month && maxDateAll.getFullYear()===OPENING_BALANCE.year;
+  function branchForecast(r){
+    var beger=r.br['Beger']||0;
+    if(_obActive){
+      var nDaily=r.dailyDays?r.dailyDays.size:0;
+      var dailyBeger=beger-(r.openBeger||0);
+      if(nDaily>0){
+        var avgD=dailyBeger/nDaily;
+        return (r.openBeger||0) + avgD*(foreDaysInMonth-OPENING_BALANCE.lastDay);
+      }
+      return beger; // มีแต่ยอดยกมา ยังไม่มีรายวัน
+    }
+    return daysPassedAll>0 ? beger/daysPassedAll*foreDaysInMonth : beger;
+  }
+  var foreAll=rows.reduce(function(a,r){return a+branchForecast(r);},0);
   var forePctAll=tgtAll>0?(foreAll/tgtAll*100):0;
   var foreCol=forePctAll>=100?'#4ade80':forePctAll>=70?'#fbbf24':'#f87171';
   // Brand MS% — top brand by share
@@ -3421,13 +3848,8 @@ function rt(){
   wrap.innerHTML=rows.map(function(r,i){
     var begerSales=r.br['Beger']||0;
     var pct=r.tg>0?(begerSales/r.tg*100):0;
-    // คาดการณ์ใช้วันที่ผ่านมาจริงในเดือน (max date) ไม่ใช่ unique วันของสาขา
-    var avgDay=begerSales/daysPassedAll;
-    var tmFilter=document.getElementById('tm').value;
-    // ใช้ maxDateAll (already computed) แทน [...r.days][0] ที่ไม่รับประกัน order
-    var rMonth=tmFilter!==''?parseInt(tmFilter):maxDateAll.getMonth();
-    var rDaysInMonth=new Date(maxDateAll.getFullYear(),rMonth+1,0).getDate();
-    var fore=avgDay*rDaysInMonth;
+    // คาดการณ์รายสาขา (ใช้ branchForecast — รองรับยอดยกมา)
+    var fore=branchForecast(r);
     var forePct=r.tg>0?(fore/r.tg*100):0;
     // MS%: ใช้ entry เสาร์ล่าสุด (lwbMap) ถ้ามี ไม่งั้น r.br อาจมีแค่ Beger → 100%
     var msEntry=lwbMap[r.bc]||null;
@@ -3521,18 +3943,17 @@ function renderAchChart(rows){
 function showBranch(bc,ch){
   var data=getTF().filter(function(e){return e.bc===bc&&e.ch===ch;});
   if(!data.length) return;
-  // เรียงจากใหม่สุด → ใช้ record ล่าสุดสำหรับ pc/pcpromo/ps/rg
+  // DAILY MODEL: sum ทุก entry ในเดือนล่าสุด
   var sorted=data.slice().sort(function(a,b){return a.d<b.d?1:-1;});
-  var r=sorted[0]; // entry ล่าสุด = ยอด MTD ล่าสุด
-  // FIX: scope วันที่บันทึกให้เฉพาะเดือนล่าสุด ป้องกัน cross-month count
+  var r=sorted[0]; // entry ล่าสุด → ใช้ meta (pc, ps, rg, tg)
   var latestMonth=new Date(r.d+'T00:00:00').getMonth();
   var latestYear=new Date(r.d+'T00:00:00').getFullYear();
   var monthData=data.filter(function(e){
     var dd=new Date(e.d+'T00:00:00');
     return dd.getMonth()===latestMonth&&dd.getFullYear()===latestYear;
   });
-  // MTD FIX: ใช้ entry ล่าสุดเพียงรายการเดียว (ข้อมูลเป็น MTD สะสม ไม่ใช่รายวัน)
-  var totSales=(r.br&&r.br['Beger'])||0; // เฉพาะ Beger จาก entry ล่าสุด
+  // DAILY: sum Beger ทุกวันในเดือน
+  var totSales=monthData.reduce(function(a,e){ return a+((e.br&&e.br['Beger'])||0); },0);
   var pct=r.tg>0?(totSales/r.tg*100):0;
   var pctCol=pct>=100?'var(--gr2)':pct>=70?'var(--am)':'var(--rd)';
 
@@ -3577,8 +3998,8 @@ function showBranch(bc,ch){
       '</div>';
     }).join('')+
     '</div>'+
-    // Daily list — eBeger คือยอด MTD สะสม ณ วันนั้น (ไม่ใช่ยอดรายวัน)
-    '<div style="font-size:11px;font-weight:600;color:var(--tx2);margin:12px 0 6px">ประวัติการบันทึก <span style="font-size:9px;color:var(--tx3);font-weight:400">(ยอด MTD สะสม)</span></div>'+
+    // Daily list — eBeger คือยอดรายวันจริง
+    '<div style="font-size:11px;font-weight:600;color:var(--tx2);margin:12px 0 6px">ประวัติการบันทึกรายวัน <span style="font-size:9px;color:var(--tx3);font-weight:400">(ยอดแต่ละวัน)</span></div>'+
     '<div class="mcard" style="padding:8px 11px">'+
     data.slice().sort(function(a,b){return a.d<b.d?1:-1;}).map(function(e){
       var dp=new Date(e.d+'T00:00:00').toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit'});
@@ -3823,25 +4244,33 @@ function checkClearInput(){
 }
 
 async function confirmClearAll(){
-  if(!window._fsDel){ toast('⚠ Firebase ยังไม่พร้อม', 'err'); return; }
+  if(!window._fsBatchDel && !window._fsDel){ toast('⚠ Firebase ยังไม่พร้อม', 'err'); return; }
   var btn = document.getElementById('clear-confirm-btn');
   btn.disabled = true;
   btn.textContent = '⏳ กำลังลบ...';
 
   try {
     // snapshot SD ก่อน loop เพราะ onSnapshot อาจ update SD ระหว่างลบ
-    var toDelete = SD.slice();
-    var total = toDelete.length;
-    for(var i = 0; i < toDelete.length; i++){
-      if(toDelete[i]._id){
-        await window._fsDel(toDelete[i]._id);
-      }
+    var ids = SD.slice().map(function(e){ return e._id; }).filter(Boolean);
+    var total = ids.length;
+    if(total === 0){
+      closeClearModal();
+      toast('ℹ ไม่มีข้อมูลให้ลบ', 'ok');
+      return;
+    }
+    if(window._fsBatchDel){
+      await window._fsBatchDel(ids, function(done, tot){
+        btn.textContent = '⏳ กำลังลบ ' + done.toLocaleString() + '/' + tot.toLocaleString() + '...';
+      });
+    } else {
+      // fallback: ลบทีละรายการ (กรณี batch ใช้ไม่ได้)
+      for(var i = 0; i < ids.length; i++){ await window._fsDel(ids[i]); }
     }
     closeClearModal();
-    toast('✅ ลบข้อมูลทั้งหมด ' + total + ' รายการแล้ว', 'ok');
+    toast('✅ ลบข้อมูลทั้งหมด ' + total.toLocaleString() + ' รายการแล้ว', 'ok');
   } catch(e) {
     console.error('Clear error:', e);
-    toast('❌ ลบไม่สำเร็จ: ' + (e.code||e), 'err');
+    toast('❌ ลบไม่สำเร็จ: ' + (e.code||e.message||e), 'err');
     btn.disabled = false;
     btn.textContent = '🗑 ลบทั้งหมด';
   }
@@ -4173,8 +4602,8 @@ function updateTitle(){
   var dow=new Date(di.value+'T00:00:00').getDay();
   var isSat=(dow===6);
   hdr.innerHTML=isSat
-    ?'🎨 ยอดขายแบรนด์อื่น สะสม MTD (บาท) &nbsp;<span style="background:rgba(245,166,35,0.2);color:#f5a623;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;border:.5px solid rgba(245,166,35,0.4)">⚠ วันเสาร์ — ต้องกรอก</span>'
-    :'🎨 ยอดขายแบรนด์อื่น สะสม MTD (บาท) &nbsp;<span style="background:rgba(127,163,240,0.1);color:#7fa3f0;font-size:10px;font-weight:500;padding:2px 7px;border-radius:8px;border:.5px solid rgba(127,163,240,0.2)">วันปกติ — ไม่บังคับ</span>';
+    ?'🎨 ยอดขายแบรนด์อื่น วันนี้ (บาท) &nbsp;<span style="background:rgba(245,166,35,0.2);color:#f5a623;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;border:.5px solid rgba(245,166,35,0.4)">⚠ วันเสาร์ — ต้องกรอก</span>'
+    :'🎨 ยอดขายแบรนด์อื่น วันนี้ (บาท) &nbsp;<span style="background:rgba(127,163,240,0.1);color:#7fa3f0;font-size:10px;font-weight:500;padding:2px 7px;border-radius:8px;border:.5px solid rgba(127,163,240,0.2)">วันปกติ — ไม่บังคับ</span>';
 }
 
 (function(){
@@ -4193,6 +4622,1054 @@ function updateTitle(){
   // renderList จะถูกเรียกอัตโนมัติจาก Firestore listener
   initFirebase();
 })();
+
+// ═══════════════════════════════════════════════
+//  MANAGER DESKTOP DASHBOARD JS
+// ═══════════════════════════════════════════════
+
+var _mgrTab = 'overview';
+var _mgrMissDate = '';
+var _mgrHeatMode = 'miss';
+var _mgrCtr = null; // chart instance
+var _mgrMs = null; // MS% trend chart instance
+var _mgrDs = null; // daily sales trend chart instance
+
+function lsOpenDesktop() {
+  // ซ่อน overview modal เก่า (mobile) — เปิด desktop แทน
+  var ov = document.getElementById('overview-modal');
+  if (ov) { ov.classList.remove('open'); ov.style.display = 'none'; }
+  var d = document.getElementById('mgr-desktop');
+  if (d) d.classList.add('open');
+  // ล็อก scroll ของ body ป้องกัน scrollbar ซ้อน
+  document.body.style.overflow = 'hidden';
+  document.documentElement.style.overflow = 'hidden';
+  // แสดง skeleton ถ้าข้อมูลยังไม่มา
+  var sk = document.getElementById('mgr-skeleton');
+  if (sk) { if (!SD || SD.length === 0) sk.classList.add('show'); else sk.classList.remove('show'); }
+  // ตั้ง filter เดือนปัจจุบัน อัตโนมัติ
+  var now = new Date();
+  var fmEl = document.getElementById('mgr-fm');
+  if (fmEl && fmEl.value === '') fmEl.value = String(now.getMonth());
+  if (fmEl && fmEl._sselRefresh) fmEl._sselRefresh();
+  // เปิดใช้งานช่องพิมพ์ค้นหาในทุก filter (ครั้งแรกเท่านั้น)
+  mgrEnhanceAllFilters();
+  mgrUpdateChainBanner();
+  // sync sup filter
+  mgrPopulateSups();
+  mgrPopulateBranches();
+  // อัปเดต timestamp
+  if (SD && SD.length > 0) mgrUpdateTimestamp();
+  // set default date
+  var today = new Date();
+  var fmt = function(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
+  var pick = document.getElementById('mk-date-pick');
+  if(pick) pick.value = fmt(today);
+  _mgrMissDate = fmt(today);
+  mgrSwitchTab('overview');
+}
+
+function mgrClose() {
+  var d = document.getElementById('mgr-desktop');
+  if (d) d.classList.remove('open');
+  document.body.style.overflow = '';
+  document.documentElement.style.overflow = '';
+}
+
+function mgrUpdateTimestamp() {
+  var el = document.getElementById('mgr-updated-txt');
+  if (!el) return;
+  var thM = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  // วันที่ข้อมูลล่าสุด (entry ใหม่สุด)
+  var dataDate = '';
+  if (SD && SD.length) {
+    var maxD = SD.reduce(function(mx,e){ return e.d>mx?e.d:mx; }, SD[0].d);
+    var dd = new Date(maxD+'T00:00:00');
+    dataDate = dd.getDate()+' '+thM[dd.getMonth()];
+  }
+  // เวลาที่ sync ล่าสุด
+  var now = new Date();
+  var hh = String(now.getHours()).padStart(2,'0');
+  var mm = String(now.getMinutes()).padStart(2,'0');
+  el.textContent = 'ข้อมูล ณ ' + (dataDate ? dataDate + ' · ' : '') + 'อัปเดต ' + hh + ':' + mm;
+}
+
+function mgrSwitchTab(tab) {
+  _mgrTab = tab;
+  ['overview','ranking','missing'].forEach(function(t) {
+    document.getElementById('mtab-'+t).classList.toggle('on', t===tab);
+    document.getElementById('mgr-pg-'+t).classList.toggle('on', t===tab);
+  });
+  if (tab==='overview') mgrRenderOverview();
+  if (tab==='ranking')  mgrRenderRanking();
+  if (tab==='missing')  mgrMissRefresh();
+}
+
+function mgrRefresh() {
+  if (_mgrTab==='overview') mgrRenderOverview();
+  if (_mgrTab==='ranking')  mgrRenderRanking();
+  if (_mgrTab==='missing')  mgrMissRefresh();
+}
+
+// ── Helpers ──────────────────────────────────
+function mgrGetData() {
+  var mo = document.getElementById('mgr-fm').value;
+  var ch = document.getElementById('mgr-fc').value;
+  var ps = document.getElementById('mgr-fps').value;
+  var brEl = document.getElementById('mgr-fbr');
+  var br = brEl ? brEl.value : '';
+  return SD.filter(function(e) {
+    if (mo!=='' && new Date(e.d+'T00:00:00').getMonth()!==parseInt(mo)) return false;
+    if (ch && e.ch!==ch) return false;
+    if (br && e.bc!==br) return false;
+    if (ps && e.ps!==ps) return false;
+    return true;
+  });
+}
+
+function mgrScopeMonth(data) {
+  if (!data.length) return data;
+  var maxDate = data.reduce(function(mx,e){ var d=new Date(e.d+'T00:00:00'); return d>mx?d:mx; }, new Date(data[0].d+'T00:00:00'));
+  var mo = document.getElementById('mgr-fm').value;
+  if (mo!=='') return data;
+  return data.filter(function(e){ var d=new Date(e.d+'T00:00:00'); return d.getMonth()===maxDate.getMonth()&&d.getFullYear()===maxDate.getFullYear(); });
+}
+
+// ── Searchable Select (พิมพ์ค้นหาได้ทุก filter) ─────────
+function enhanceSearchSelect(id) {
+  var sel = document.getElementById(id);
+  if (!sel || sel._sselDone) return;
+  sel._sselDone = true;
+
+  var wrap = document.createElement('div');
+  wrap.className = 'ssel-wrap';
+  sel.parentNode.insertBefore(wrap, sel);
+  wrap.appendChild(sel);
+
+  // ช่องแสดงผลหลัก: แค่กดเปิด panel ไม่สามารถพิมพ์แก้คำได้ตรงนี้
+  var disp = document.createElement('div');
+  disp.className = sel.className + ' ssel-display';
+  disp.tabIndex = 0;
+  wrap.appendChild(disp);
+
+  var panel = document.createElement('div');
+  panel.className = 'ssel-panel';
+  wrap.appendChild(panel);
+
+  // ช่องค้นหา (อยู่ใน panel เท่านั้น แยกจากช่องแสดงผลหลัก)
+  var searchInp = document.createElement('input');
+  searchInp.type = 'text';
+  searchInp.className = 'ssel-search-inp';
+  searchInp.autocomplete = 'off';
+  searchInp.spellcheck = false;
+  searchInp.setAttribute('autocorrect', 'off');
+  searchInp.setAttribute('autocapitalize', 'off');
+  searchInp.setAttribute('data-gramm', 'false');
+  searchInp.placeholder = 'พิมพ์ค้นหา...';
+  panel.appendChild(searchInp);
+
+  var listEl = document.createElement('div');
+  listEl.className = 'ssel-list';
+  panel.appendChild(listEl);
+
+  function curText() {
+    var o = sel.selectedOptions && sel.selectedOptions[0];
+    return o ? o.textContent : '';
+  }
+
+  function renderList(q) {
+    listEl.innerHTML = '';
+    q = (q || '').trim().toLowerCase();
+    var opts = Array.prototype.slice.call(sel.options);
+    var any = false;
+    opts.forEach(function (o) {
+      var txt = o.textContent;
+      if (q && txt.toLowerCase().indexOf(q) === -1) return;
+      any = true;
+      var item = document.createElement('div');
+      item.className = 'ssel-item' + (o.value === sel.value ? ' sel' : '');
+      item.textContent = txt;
+      item.onmousedown = function (e) {
+        e.preventDefault();
+        sel.value = o.value;
+        disp.textContent = txt;
+        closePanel();
+        sel.dispatchEvent(new Event('change', { bubbles: true }));
+      };
+      listEl.appendChild(item);
+    });
+    if (!any) {
+      var none = document.createElement('div');
+      none.className = 'ssel-empty';
+      none.textContent = 'ไม่พบรายการ';
+      listEl.appendChild(none);
+    }
+  }
+
+  function openPanel() {
+    searchInp.value = '';
+    renderList('');
+    panel.classList.add('show');
+    setTimeout(function () { searchInp.focus(); }, 0);
+  }
+  function closePanel() { panel.classList.remove('show'); }
+
+  disp.textContent = curText();
+
+  disp.addEventListener('click', function () {
+    if (panel.classList.contains('show')) closePanel(); else openPanel();
+  });
+  disp.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPanel(); }
+    if (e.key === 'Escape') closePanel();
+  });
+  searchInp.addEventListener('input', function () { renderList(searchInp.value); });
+  searchInp.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closePanel(); disp.focus(); } });
+  document.addEventListener('mousedown', function (e) { if (!wrap.contains(e.target)) closePanel(); });
+
+  // เผื่อโค้ดอื่นเปลี่ยน sel.value/options ตรงๆ แล้วต้องอัปเดตข้อความที่แสดง
+  sel._sselRefresh = function () { disp.textContent = curText(); };
+}
+
+function mgrToggleNav() {
+  var nav = document.getElementById('mgr-nav');
+  var btn = document.getElementById('mgr-nav-toggle');
+  if (!nav) return;
+  var isHidden = nav.style.display === 'none';
+  nav.style.display = isHidden ? 'flex' : 'none';
+  if (btn) btn.textContent = isHidden ? '▾' : '▸';
+}
+
+function mgrUpdateChainBanner() {
+  var chEl = document.getElementById('mgr-fc');
+  var brEl = document.getElementById('mgr-fbr');
+  var banner = document.getElementById('mgr-chain-banner');
+  var icon = document.getElementById('mgr-chain-banner-icon');
+  var txt = document.getElementById('mgr-chain-banner-text');
+  var brTxt = document.getElementById('mgr-chain-banner-branch');
+  if (!chEl || !banner || !txt) return;
+  var ch = chEl.value;
+  var brName = '';
+  if (brEl && brEl.value) {
+    var o = brEl.selectedOptions && brEl.selectedOptions[0];
+    brName = o ? o.textContent : '';
+  }
+  if (ch) {
+    txt.textContent = ch;
+    if (brTxt) brTxt.textContent = brName ? (' · ' + brName) : '';
+    if (icon) icon.textContent = '🏪';
+  } else {
+    txt.textContent = 'MDT ALL';
+    if (brTxt) brTxt.textContent = '';
+    if (icon) icon.textContent = '🌐';
+  }
+  banner.style.display = 'block';
+}
+
+function mgrEnhanceAllFilters() {
+  ['mgr-fm','mgr-fc','mgr-fbr','mgr-fps','mgr-tps'].forEach(enhanceSearchSelect);
+}
+
+function mgrPopulateSups() {
+  var supSet = new Set();
+  Object.keys(BRANCHES).forEach(function(ch){ Object.keys(BRANCHES[ch]).forEach(function(bc){ var s=BRANCHES[ch][bc][5]; if(s) supSet.add(s); }); });
+  SD.forEach(function(e){ if(e.ps) supSet.add(e.ps); });
+  var sups = [...supSet].sort();
+  ['mgr-fps','mgr-tps'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (!el) return;
+    var cur = el.value;
+    el.innerHTML = '<option value="">👤 ทุก Supervisor</option>';
+    sups.forEach(function(s){ var o=document.createElement('option'); o.value=s; o.textContent=s; if(s===cur) o.selected=true; el.appendChild(o); });
+    if (el._sselRefresh) el._sselRefresh();
+  });
+}
+
+function mgrPopulateBranches() {
+  var el = document.getElementById('mgr-fbr');
+  if (!el) return;
+  var ch = (document.getElementById('mgr-fc')||{}).value || '';
+  var cur = el.value;
+  var list = [];
+  var chains = ch ? [ch] : Object.keys(BRANCHES);
+  chains.forEach(function(c){
+    if (!BRANCHES[c]) return;
+    Object.keys(BRANCHES[c]).forEach(function(bc){
+      list.push({bc:bc, name:BRANCHES[c][bc][0]||bc});
+    });
+  });
+  list.sort(function(a,b){ return a.name.localeCompare(b.name,'th'); });
+  el.innerHTML = '<option value="">🏬 ทุกสาขา</option>';
+  var stillExists = list.some(function(it){ return it.bc===cur; });
+  list.forEach(function(it){
+    var o=document.createElement('option');
+    o.value=it.bc; o.textContent=it.name;
+    if (it.bc===cur && stillExists) o.selected=true;
+    el.appendChild(o);
+  });
+  if (!stillExists) el.value='';
+  if (el._sselRefresh) el._sselRefresh();
+}
+
+// ── OVERVIEW ─────────────────────────────────
+function mgrRenderOverview() {
+  var data = mgrGetData();
+  var scoped = mgrScopeMonth(data);
+  if (!scoped.length) {
+    ['mk1','mk2','mk3','mk4','mk5','mk5pct'].forEach(function(id){ var el=document.getElementById(id); if(el) el.textContent='0'; });
+    return;
+  }
+  var maxDate = scoped.reduce(function(mx,e){ var d=new Date(e.d+'T00:00:00'); return d>mx?d:mx; }, new Date(scoped[0].d+'T00:00:00'));
+  var refMonth = maxDate.getMonth(), refYear = maxDate.getFullYear();
+  var daysInMonth = new Date(refYear,refMonth+1,0).getDate();
+  // daysPassed = วันที่ล่าสุดในเดือน (ไม่ใช่จำนวนวันที่มี entry เพราะอาจขาดส่งบางวัน)
+  var daysPassed = maxDate.getDate();
+  // ถ้า maxDate คือวันสุดท้ายของเดือน → forecast = MTD ซึ่งถูกต้อง (เดือนจบแล้ว)
+  // ถ้าไม่ใช่ → forecast จะ extrapolate ตามปกติ
+
+  // MTD via sumByBranch
+  var mtdData = sumByBranch(scoped);
+  var totS = mtdData.reduce(function(a,b){ return a+((b.br&&b.br['Beger'])||0); }, 0);
+  var totT = mtdData.reduce(function(a,b){ return a+b.tg; }, 0);
+  var pct = totT>0 ? totS/totT*100 : 0;
+  // เฉลี่ย/วัน: ใช้เฉพาะยอดรายวันจริง (ไม่รวมยอดยกมา) หารด้วยจำนวนวันรายวันจริง
+  var dailyOnlySum=0, dailyOnlyDays={};
+  scoped.forEach(function(e){
+    if(isOpeningBalance(e)) return;
+    dailyOnlySum += (e.br&&e.br['Beger'])||0;
+    dailyOnlyDays[e.d]=true;
+  });
+  var nDailyDays=Object.keys(dailyOnlyDays).length;
+  var avg = nDailyDays>0 ? dailyOnlySum/nDailyDays : (daysPassed>0 ? totS/daysPassed : 0);
+  // คาดการณ์ = ยอดยกมา + (เฉลี่ยรายวัน × วันที่เหลือในเดือน)
+  var openingSum = totS - dailyOnlySum;
+  var fore;
+  if(OPENING_BALANCE && nDailyDays>0){
+    // วันที่เหลือ = daysInMonth - lastDay (วันที่ยังไม่ถึง) + วันรายวันที่ผ่านมา
+    var remainDays = daysInMonth - OPENING_BALANCE.lastDay;
+    fore = openingSum + avg*remainDays;
+  } else {
+    fore = avg*daysInMonth;
+  }
+  var forePct = totT>0 ? fore/totT*100 : 0;
+
+  var fK2 = function(n){ return ''+Math.round(n||0).toLocaleString(); };
+  var el = function(id){ return document.getElementById(id); };
+  if(el('mk1')) el('mk1').textContent = fK2(totS);
+  if(el('mk2')) el('mk2').textContent = fK2(totT);
+  if(el('mk3')){ el('mk3').textContent = pct.toFixed(1)+'%'; el('mk3').style.color = pct>=100?'#34d27a':pct>=70?'#f5a623':'#f87171'; }
+  if(el('mk3-bar')) el('mk3-bar').style.width = Math.min(pct,100)+'%';
+  if(el('mk4')) el('mk4').textContent = fK2(avg);
+  if(el('mk5')) el('mk5').textContent = fK2(fore);
+  if(el('mk5pct')){ el('mk5pct').textContent = forePct.toFixed(1)+'%'; el('mk5pct').style.color = forePct>=100?'#34d27a':forePct>=70?'#f5a623':'#f87171'; }
+
+  // Trend chart
+  mgrRenderTrend(scoped);
+
+  // MS% daily trend
+  mgrRenderMSTrend(scoped);
+
+  // Daily sales trend (bars + linear trend)
+  mgrRenderDailySales(scoped);
+
+  // MS%
+  mgrRenderMS(scoped);
+
+  // DOW
+  mgrRenderDOW(scoped);
+
+  // Chain
+  mgrRenderChain(scoped, daysPassed, daysInMonth);
+
+  // Sup
+  mgrRenderSup(scoped);
+
+  // Period (compact — inside DOW card)
+  var p1=0,p2=0,p3=0;
+  scoped.forEach(function(e){ var dn=new Date(e.d+'T00:00:00').getDate(); var v=(e.br&&e.br['Beger'])||0; if(dn<=10)p1+=v; else if(dn<=20)p2+=v; else p3+=v; });
+  var maxP=Math.max(p1,p2,p3)||1;
+  var periodEl=document.getElementById('mk-period');
+  if(periodEl) periodEl.innerHTML=[
+    {range:'1–10',val:p1},
+    {range:'11–20',val:p2},
+    {range:'21–31',val:p3}
+  ].map(function(p){
+    var isMax=p.val===maxP&&maxP>0;
+    var bg=isMax?'rgba(245,166,35,0.07)':'rgba(255,255,255,0.03)';
+    var bd=isMax?'rgba(245,166,35,0.18)':'rgba(255,255,255,0.06)';
+    var vc=isMax?'#f5a623':'#e2e8f0';
+    return '<div style="background:'+bg+';border:.5px solid '+bd+';border-radius:8px;padding:9px 10px">'+
+      '<div style="font-size:9px;color:#5c6480;font-weight:600;margin-bottom:4px">'+p.range+'</div>'+
+      '<div style="font-size:13px;font-weight:700;color:'+vc+'">'+fK(p.val)+'</div>'+
+    '</div>';
+  }).join('');
+}
+
+function mgrRenderMSTrend(scoped) {
+  // MS% = ยอด Beger / ยอดรวมทุกแบรนด์ ในแต่ละวัน
+  // ใช้เฉพาะ entry ที่มีข้อมูลคู่แข่ง (>1 แบรนด์ = วันเสาร์) ไม่ให้วันธรรมดากลายเป็น 100%
+  var cEl=document.getElementById('mcms');
+  var emptyEl=document.getElementById('mcms-empty');
+  if(!cEl) return;
+  var msByDate={};
+  scoped.forEach(function(e){
+    if(!e.br) return;
+    if(Object.keys(e.br).length<=1) return;
+    if(!msByDate[e.d]) msByDate[e.d]={beger:0, all:0};
+    Object.keys(e.br).forEach(function(b){
+      var v=e.br[b]||0;
+      msByDate[e.d].all+=v;
+      if(b==='Beger') msByDate[e.d].beger+=v;
+    });
+  });
+  var dates=Object.keys(msByDate).filter(function(d){return msByDate[d].all>0;}).sort();
+  if(_mgrMs){ try{_mgrMs.destroy();}catch(e){} _mgrMs=null; }
+  if(dates.length===0 || typeof Chart==='undefined'){
+    cEl.style.display='none';
+    if(emptyEl) emptyEl.style.display='block';
+    return;
+  }
+  cEl.style.display='';
+  if(emptyEl) emptyEl.style.display='none';
+  var vals=dates.map(function(d){return +(msByDate[d].beger/msByDate[d].all*100).toFixed(1);});
+  var lbls=dates.map(function(d){var dt=new Date(d+'T00:00:00');return dt.getDate()+'/'+(dt.getMonth()+1);});
+  var ptCols=vals.map(function(v){return v>=40?'#34d27a':v>=25?'#fbbf24':'#f87171';});
+  _mgrMs=new Chart(cEl.getContext('2d'),{
+    type:'line',
+    data:{labels:lbls,datasets:[{
+      label:'MS% เบเยอร์',data:vals,
+      borderColor:'#3d6be0',
+      backgroundColor:'rgba(61,107,224,0.12)',
+      borderWidth:2.5,
+      pointRadius:vals.length>1?4:5,
+      pointBackgroundColor:ptCols,
+      pointBorderColor:'#0f1428',pointBorderWidth:2,
+      fill:true,tension:.3,spanGaps:true
+    }]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){return ' MS% '+ctx.parsed.y+'%';}}}},
+      scales:{
+        x:{ticks:{color:'#5c6480',font:{size:9},autoSkip:true,maxTicksLimit:15},grid:{color:'rgba(255,255,255,0.04)'},border:{color:'rgba(255,255,255,0.06)'}},
+        y:{beginAtZero:false,ticks:{color:'#5c6480',font:{size:9},callback:function(v){return (Math.round(v*10)/10)+'%';}},grid:{color:'rgba(255,255,255,0.04)'},border:{color:'rgba(255,255,255,0.06)'}}
+      }
+    }
+  });
+}
+
+function mgrRenderDailySales(scoped) {
+  // ยอดขาย Beger รายวันจริง (ตัดยอดยกมา) รวมทุกสาขาต่อวัน + เส้นแนวโน้มเชิงเส้น
+  var cEl=document.getElementById('mcds');
+  var emptyEl=document.getElementById('mcds-empty');
+  if(!cEl) return;
+  var byDate={};
+  scoped.forEach(function(e){
+    if(isOpeningBalance(e)) return; // ข้ามยอดยกมา
+    var v=(e.br&&e.br['Beger'])||0;
+    if(!byDate[e.d]) byDate[e.d]=0;
+    byDate[e.d]+=v;
+  });
+  var dates=Object.keys(byDate).sort();
+  if(_mgrDs){ try{_mgrDs.destroy();}catch(e){} _mgrDs=null; }
+  if(dates.length===0 || typeof Chart==='undefined'){
+    cEl.style.display='none';
+    if(emptyEl) emptyEl.style.display='block';
+    return;
+  }
+  cEl.style.display='';
+  if(emptyEl) emptyEl.style.display='none';
+  var vals=dates.map(function(d){return Math.round(byDate[d]);});
+  var lbls=dates.map(function(d){var dt=new Date(d+'T00:00:00');return dt.getDate()+'/'+(dt.getMonth()+1);});
+  // ไฮไลต์วันเสาร์เป็นสีเขียว
+  var barCols=dates.map(function(d){return new Date(d+'T00:00:00').getDay()===6?'#34d27a':'#3d6be0';});
+  // เส้นแนวโน้มเชิงเส้น (least squares)
+  var n=vals.length, sx=0,sy=0,sxy=0,sxx=0;
+  for(var i=0;i<n;i++){ sx+=i; sy+=vals[i]; sxy+=i*vals[i]; sxx+=i*i; }
+  var denom=(n*sxx-sx*sx);
+  var slope=denom!==0?(n*sxy-sx*sy)/denom:0;
+  var inter=(sy-slope*sx)/n;
+  var lin=vals.map(function(_,i){return Math.round(inter+slope*i);});
+  var yfmt=function(v){return v>=1e6?(v/1e6).toFixed(0)+'M':v>=1000?(v/1000).toFixed(0)+'K':v;};
+  _mgrDs=new Chart(cEl.getContext('2d'),{
+    data:{labels:lbls,datasets:[
+      {type:'bar',label:'ยอดรายวัน',data:vals,backgroundColor:barCols,borderRadius:3,barPercentage:0.8,categoryPercentage:0.84,order:2},
+      {type:'line',label:'แนวโน้ม',data:lin,borderColor:'#f5a623',borderWidth:2,borderDash:[6,4],pointRadius:0,fill:false,tension:0,order:1}
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return (c.dataset.label==='แนวโน้ม'?' แนวโน้ม ':' ')+'฿'+Math.round(c.parsed.y).toLocaleString();}}}},
+      scales:{
+        x:{ticks:{color:'#5c6480',font:{size:9},autoSkip:true,maxTicksLimit:15},grid:{display:false},border:{color:'rgba(255,255,255,0.06)'}},
+        y:{beginAtZero:true,ticks:{color:'#5c6480',font:{size:9},callback:yfmt},grid:{color:'rgba(255,255,255,0.04)'},border:{color:'rgba(255,255,255,0.06)'}}
+      }
+    }
+  });
+}
+
+function mgrRenderTrend(scoped) {
+  var allDatesSet={};
+  scoped.forEach(function(e){ allDatesSet[e.d]=true; });
+  var sD = Object.keys(allDatesSet).sort();
+  var runSum=0, tgByBc={};
+  var dataSorted=scoped.slice().sort(function(a,b){ return a.d<b.d?-1:1; });
+  var dataIdx=0;
+  var cumSales=[], dlbl=[];
+  sD.forEach(function(day){
+    while(dataIdx<dataSorted.length && dataSorted[dataIdx].d<=day){
+      var e=dataSorted[dataIdx];
+      runSum+=(e.br&&e.br['Beger'])||0;
+      if(e.tg&&!tgByBc[e.bc]) tgByBc[e.bc]=e.tg;
+      dataIdx++;
+    }
+    cumSales.push(Math.round(runSum));
+    dlbl.push(new Date(day+'T00:00:00').getDate());
+  });
+  var totT2=Object.values(tgByBc).reduce(function(a,v){return a+v;},0);
+  var cumTgt=sD.map(function(d,i){ return Math.round(totT2*(i+1)/sD.length); });
+  var cEl=document.getElementById('mctr');
+  if(!cEl||typeof Chart==='undefined') return;
+  if(_mgrCtr){ try{_mgrCtr.destroy();}catch(e){} }
+  _mgrCtr=new Chart(cEl.getContext('2d'),{
+    type:'line',
+    data:{labels:dlbl,datasets:[
+      {label:'ยอดสะสม',data:cumSales,borderColor:'#34d27a',backgroundColor:'rgba(52,210,122,0.08)',borderWidth:2.5,pointRadius:2.5,fill:true,tension:.35},
+      {label:'เป้า',data:cumTgt,borderColor:'rgba(127,163,240,0.3)',borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false,tension:.1}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{color:'#5c6480',font:{size:9},autoSkip:true,maxTicksLimit:15},grid:{color:'rgba(255,255,255,0.04)'},border:{color:'rgba(255,255,255,0.06)'}},
+        y:{ticks:{color:'#5c6480',font:{size:9},callback:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1000?(v/1000).toFixed(0)+'K':v;}},grid:{color:'rgba(255,255,255,0.04)'},border:{color:'rgba(255,255,255,0.06)'}}
+      }
+    }
+  });
+}
+
+function mgrRenderMS(scoped) {
+  var bt={};BRANDS.forEach(function(b){bt[b]=0;});
+  latestWithBrands(scoped).forEach(function(e){if(e.br)Object.keys(e.br).forEach(function(b){if(bt[b]!==undefined)bt[b]+=e.br[b];});});
+  var totAll=Object.values(bt).reduce(function(a,v){return a+v;},0);
+  // แสดงเฉพาะแบรนด์ที่ Market Share >= 1% (totAll คำนวณจากทุกแบรนด์เพื่อให้ % ถูกต้อง)
+  var ab=BRANDS.filter(function(b){ return totAll>0 && (bt[b]/totAll*100)>=1; }).sort(function(a,b){return bt[b]-bt[a];});
+  var bMS=totAll>0&&bt['Beger']?(bt['Beger']/totAll*100).toFixed(1)+'%':'–';
+  var mk=document.getElementById('mk-ms-beger'); if(mk) mk.textContent='Beger '+bMS;
+  var MS_COLS=['#34d27a','#2d8653','#7ec8a0','#f5a623','#e67e22','#5eadd4','#9b8fd4','#5dc8b5','#e8845c','#c0392b','#bec3c7'];
+  var el=document.getElementById('mk-ms-table');
+  if(!el) return;
+  el.innerHTML=ab.map(function(b,i){
+    var ms=totAll>0?(bt[b]/totAll*100):0;
+    var barW=ab.length>0&&bt[ab[0]]>0?(bt[b]/bt[ab[0]]*100):0;
+    var col=b==='Beger'?'#7fa3f0':MS_COLS[i%MS_COLS.length];
+    return '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:.5px solid rgba(255,255,255,0.04)">'+
+      '<div style="width:8px;height:8px;border-radius:2px;background:'+col+';flex-shrink:0"></div>'+
+      '<div style="flex:1;font-size:11px;font-weight:'+(b==='Beger'?700:400)+';color:'+(b==='Beger'?'#fff':'#8893b0')+'">'+b+'</div>'+
+      '<div style="width:50px;background:rgba(255,255,255,0.05);border-radius:3px;height:4px;overflow:hidden">'+
+        '<div style="height:4px;border-radius:3px;background:'+col+';width:'+barW.toFixed(0)+'%"></div></div>'+
+      '<div style="font-size:11px;font-weight:700;color:'+col+';min-width:36px;text-align:right">'+ms.toFixed(1)+'%</div>'+
+    '</div>';
+  }).join('');
+}
+
+function mgrRenderDOW(scoped) {
+  var dT=[0,0,0,0,0,0,0],dC=[0,0,0,0,0,0,0];
+  scoped.forEach(function(e){
+    if(isOpeningBalance(e)) return; // ข้ามยอดยกมา
+    var v=(e.br&&e.br['Beger'])||0; var dw=new Date(e.d+'T00:00:00').getDay(); var idx=dw===0?6:dw-1; dT[idx]+=v; dC[idx]++;
+  });
+  var dA=dT.map(function(t,i){ return dC[i]>0?Math.round(t/dC[i]):0; });
+  var maxD=Math.max.apply(null,dA)||1;
+  var DOW_L=['จ.','อ.','พ.','พฤ.','ศ.','ส.','อา.'];
+  var el=document.getElementById('mk-dow'); if(!el) return;
+  el.innerHTML=dA.map(function(v,i){
+    var pct=maxD>0?(v/maxD*100):0;
+    var isMax=v===maxD&&v>0;
+    var col=isMax?'#4ade80':'#3d6be0';
+    return '<div style="display:flex;align-items:center;gap:8px;padding:4px 0">'+
+      '<div style="width:24px;font-size:11px;font-weight:700;color:'+(v>0?'#e2e8f0':'#3c4460')+'">'+DOW_L[i]+'</div>'+
+      '<div style="flex:1;background:rgba(255,255,255,0.06);border-radius:10px;height:8px;overflow:hidden">'+
+        '<div style="height:8px;border-radius:10px;background:'+col+';width:'+pct.toFixed(0)+'%"></div></div>'+
+      '<div style="min-width:64px;text-align:right;font-size:11px;font-weight:700;color:'+(isMax?'#4ade80':'#7ea890')+'">'+
+        (v>0?v.toLocaleString():'–')+'</div></div>';
+  }).join('');
+}
+
+var _chainDonutChart = null;
+
+function mgrRenderChain(scoped, daysPassed, daysInMonth) {
+  var maxDate = scoped.length ? scoped.reduce(function(mx,e){ var d=new Date(e.d+'T00:00:00'); return d>mx?d:mx; }, new Date(scoped[0].d+'T00:00:00')) : new Date();
+  var CHAINS=['Homepro','Thai Watsadu','Global House','Megahome','DoHome','DoHome Togo','HomeHub','บุญถาวร','ฮาร์ดแวร์เฮ้าส์','โฮมบุญ','โฮมเพ้นท์','ศิริมหาชัย','Homeshop'];
+  var CHAIN_COLS={
+    'Homepro':'#22c55e','Thai Watsadu':'#3b82f6','Global House':'#a855f7',
+    'Megahome':'#ec4899','DoHome':'#f97316','DoHome Togo':'#fb923c',
+    'HomeHub':'#14b8a6','บุญถาวร':'#eab308','ฮาร์ดแวร์เฮ้าส์':'#64748b',
+    'โฮมบุญ':'#06b6d4','โฮมเพ้นท์':'#c084fc','ศิริมหาชัย':'#f43f5e','Homeshop':'#10b981'
+  };
+  var cd={};CHAINS.forEach(function(c){cd[c]={s:0,t:0,n:0,open:0,dDays:{}};});
+  sumByBranch(scoped).forEach(function(e){ if(cd[e.ch]){cd[e.ch].s+=(e.br&&e.br['Beger'])||0;cd[e.ch].t+=e.tg;cd[e.ch].n++;} });
+  // แยกยอดยกมา + วันรายวันจริง ต่อ chain (จาก raw scoped)
+  scoped.forEach(function(e){
+    if(!cd[e.ch]) return;
+    if(isOpeningBalance(e)){ cd[e.ch].open+=(e.br&&e.br['Beger'])||0; }
+    else { cd[e.ch].dDays[e.d]=true; }
+  });
+  var active=CHAINS.filter(function(c){return cd[c].n>0;});
+  var totAll=active.reduce(function(a,c){return a+cd[c].s;},0);
+  var _obChain = OPENING_BALANCE && maxDate && maxDate.getMonth()===OPENING_BALANCE.month && maxDate.getFullYear()===OPENING_BALANCE.year;
+  function chainForecast(d){
+    if(_obChain){
+      var nD=Object.keys(d.dDays).length;
+      var dailyS=d.s-d.open;
+      if(nD>0){ return Math.round(d.open+(dailyS/nD)*(daysInMonth-OPENING_BALANCE.lastDay)); }
+      return d.s;
+    }
+    return daysPassed>0?Math.round(d.s/daysPassed*daysInMonth):0;
+  }
+
+  // ── Table ──
+  var el=document.getElementById('mk-chain'); if(!el) return;
+  // ถ้า daysPassed = daysInMonth แสดงว่าเดือนจบแล้ว forecast = actual (ถูกต้อง)
+  // แต่ถ้า daysPassed < daysInMonth → forecast จะ extrapolate
+  el.innerHTML=
+    '<div style="display:grid;grid-template-columns:12px 1fr 80px 48px 80px 48px;gap:2px 6px;padding:0 0 7px;border-bottom:.5px solid rgba(255,255,255,0.07);margin-bottom:4px">'+
+      '<div></div>'+
+      '<div style="font-size:9px;color:#4a5878;font-weight:600;letter-spacing:.5px">CHAIN</div>'+
+      '<div style="font-size:9px;color:#4a5878;font-weight:600;text-align:right">ยอด</div>'+
+      '<div style="font-size:9px;color:#4a5878;font-weight:600;text-align:right">ACH%</div>'+
+      '<div style="font-size:9px;color:rgba(245,166,35,.7);font-weight:600;text-align:right">คาดการณ์</div>'+
+      '<div style="font-size:9px;color:rgba(245,166,35,.7);font-weight:600;text-align:right">คาด%</div>'+
+    '</div>'+
+  active.map(function(c){
+    var d=cd[c]; var ach=d.t>0?(d.s/d.t*100):0;
+    var fore=chainForecast(d);
+    var fp=d.t>0?(fore/d.t*100):0;
+    var ac=ach>=100?'#34d27a':ach>=70?'#f5a623':'#f87171';
+    var fc=fp>=100?'#34d27a':fp>=70?'#fbbf24':'#f87171';
+    var col=CHAIN_COLS[c]||'#7fa3f0';
+    var pctOfTotal=totAll>0?(d.s/totAll*100).toFixed(1):'0';
+    return '<div style="display:grid;grid-template-columns:12px 1fr 80px 48px 80px 48px;gap:2px 6px;padding:7px 0;border-bottom:.5px solid rgba(255,255,255,0.03);align-items:center">'+
+      '<div style="width:10px;height:10px;border-radius:3px;background:'+col+';flex-shrink:0"></div>'+
+      '<div>'+
+        '<div style="font-size:12px;font-weight:600;color:#c8d4e8">'+c+'</div>'+
+        '<div style="font-size:9px;color:#4a5878;margin-top:1px">'+pctOfTotal+'% ของยอดรวม</div>'+
+      '</div>'+
+      '<div style="font-size:11px;text-align:right;color:#e2e8f0;font-variant-numeric:tabular-nums">'+fK(d.s)+'</div>'+
+      '<div style="text-align:right"><span style="font-size:11px;font-weight:700;color:'+ac+'">'+ach.toFixed(0)+'%</span></div>'+
+      '<div style="font-size:11px;text-align:right;color:'+fc+';font-variant-numeric:tabular-nums">'+fK(fore)+'</div>'+
+      '<div style="text-align:right"><span style="font-size:11px;font-weight:700;color:'+fc+'">'+fp.toFixed(0)+'%</span></div>'+
+    '</div>';
+  }).join('');
+
+  // ── Donut Chart ──
+  if (typeof Chart === 'undefined') return;
+  var cEl = document.getElementById('mk-chain-donut');
+  if (!cEl) return;
+  if (_chainDonutChart) { try{_chainDonutChart.destroy();}catch(e){} }
+
+  var labels  = active;
+  var data    = active.map(function(c){ return cd[c].s; });
+  var colors  = active.map(function(c){ return CHAIN_COLS[c]||'#7fa3f0'; });
+
+  cEl.width = 160; cEl.height = 160;
+  _chainDonutChart = new Chart(cEl.getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: data,
+        backgroundColor: colors,
+        borderColor: '#0d1228',
+        borderWidth: 2,
+        hoverOffset: 6
+      }]
+    },
+    options: {
+      responsive: false,
+      maintainAspectRatio: false,
+      cutout: '60%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              var pct = totAll>0 ? (ctx.raw/totAll*100).toFixed(1) : 0;
+              return ' ' + ctx.label + ': ' + pct + '%  (' + fK(ctx.raw) + ')';
+            }
+          },
+          backgroundColor: '#0d1228',
+          borderColor: 'rgba(255,255,255,0.1)',
+          borderWidth: 1,
+          titleColor: '#e2e8f0',
+          bodyColor: '#8893b0',
+          padding: 10
+        }
+      },
+      onHover: function(evt, elements) {
+        var lEl = document.getElementById('mk-donut-label');
+        var vEl = document.getElementById('mk-donut-val');
+        if (elements && elements.length) {
+          var idx = elements[0].index;
+          var chain = labels[idx];
+          var val   = data[idx];
+          var pct   = totAll>0?(val/totAll*100).toFixed(1):0;
+          if(lEl) lEl.textContent = chain;
+          if(vEl) vEl.textContent = pct + '%';
+        } else {
+          if(lEl) lEl.textContent = 'ยอดรวม';
+          if(vEl) vEl.textContent = fK(totAll);
+        }
+      }
+    }
+  });
+
+  // Set default center text
+  var lEl=document.getElementById('mk-donut-label');
+  var vEl=document.getElementById('mk-donut-val');
+  if(lEl) lEl.textContent='ยอดรวม';
+  if(vEl) vEl.textContent=fK(totAll);
+
+  // Legend — เรียงจากมากไปน้อย
+  var legEl=document.getElementById('mk-chain-legend');
+  if(legEl){
+    var legSorted=active.slice().sort(function(a,b){ return cd[b].s-cd[a].s; });
+    legEl.innerHTML=legSorted.map(function(c,i){
+      var pct=totAll>0?(cd[c].s/totAll*100).toFixed(1):0;
+      var col=CHAIN_COLS[c]||'#7fa3f0';
+      var zebra=i%2===1?'background:rgba(255,255,255,0.02);':'';
+      return '<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;'+zebra+'">'+
+        '<div style="width:9px;height:9px;border-radius:3px;background:'+col+';flex-shrink:0"></div>'+
+        '<div style="flex:1;font-size:11px;color:#a8b3c8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+c+'</div>'+
+        '<div style="font-size:11px;font-weight:700;color:#e8eef7;font-variant-numeric:tabular-nums">'+pct+'%</div>'+
+      '</div>';
+    }).join('');
+  }
+}
+
+// Supervisor sort state
+var _supSortCol = 'ach';
+var _supSortAsc = false;
+var _supScoped  = [];
+
+function mgrSupSort(col) {
+  if (_supSortCol === col) { _supSortAsc = !_supSortAsc; }
+  else { _supSortCol = col; _supSortAsc = (col === 'name'); }
+  mgrRenderSupTable();
+}
+
+function mgrRenderSup(scoped) {
+  _supScoped = scoped;
+  // build supMap
+  var supMap = {};
+  var _tgByBc = {};
+  // MS%: ใช้ latestWithBrands per bc
+  var lwbMap = {};
+  latestWithBrands(scoped).forEach(function(e){ lwbMap[e.bc] = e; });
+
+  scoped.forEach(function(e){
+    var sup = e.ps || 'ไม่ระบุ';
+    if (!supMap[sup]) supMap[sup] = {name:sup, s:0, t:0, tot:0, n:new Set(), open:0, dDays:{}};
+    supMap[sup].s += (e.br && e.br['Beger']) || 0;
+    supMap[sup].n.add(e.bc);
+    // แยกยอดยกมา + วันรายวันจริง
+    if(isOpeningBalance(e)){ supMap[sup].open += (e.br&&e.br['Beger'])||0; }
+    else { supMap[sup].dDays[e.d]=true; }
+    // target — เก็บครั้งเดียวต่อสาขา
+    if (!_tgByBc[e.bc]) {
+      _tgByBc[e.bc] = true;
+      supMap[sup].t += e.tg || 0;
+    }
+  });
+  // tot MS%: sum latestWithBrands per bc (ไม่ซ้ำ)
+  var _totAdded = {};
+  latestWithBrands(scoped).forEach(function(e){
+    var sup = e.ps || 'ไม่ระบุ';
+    if (!supMap[sup] || _totAdded[e.bc]) return;
+    _totAdded[e.bc] = true;
+    if (e.br) Object.values(e.br).forEach(function(v){ supMap[sup].tot += v; });
+  });
+
+  // คำนวณ days สำหรับ forecast
+  var maxDate = scoped.length ? scoped.reduce(function(mx,e){ var d=new Date(e.d+'T00:00:00'); return d>mx?d:mx; }, new Date(scoped[0].d+'T00:00:00')) : new Date();
+  var daysInMonth = new Date(maxDate.getFullYear(), maxDate.getMonth()+1, 0).getDate();
+  var daysPassed  = maxDate.getDate();
+
+  // เพิ่ม computed fields
+  var _obSup = OPENING_BALANCE && maxDate.getMonth()===OPENING_BALANCE.month && maxDate.getFullYear()===OPENING_BALANCE.year;
+  Object.keys(supMap).forEach(function(s){
+    var d = supMap[s];
+    d.ach     = d.t > 0 ? d.s / d.t * 100 : 0;
+    if(_obSup){
+      var nD=Object.keys(d.dDays).length;
+      var dailyS=d.s-d.open;
+      d.est = nD>0 ? Math.round(d.open+(dailyS/nD)*(daysInMonth-OPENING_BALANCE.lastDay)) : d.s;
+    } else {
+      d.est = daysPassed > 0 ? Math.round(d.s / daysPassed * daysInMonth) : d.s;
+    }
+    d.estpct  = d.t > 0 ? d.est / d.t * 100 : 0;
+    d.ms      = d.tot > 0 ? d.s / d.tot * 100 : 0;
+  });
+
+  window._supMap = supMap; // เก็บไว้ใช้ตอน sort
+  mgrRenderSupTable();
+}
+
+function mgrRenderSupTable() {
+  var supMap = window._supMap || {};
+  var rows = Object.values(supMap);
+  if (!rows.length) return;
+
+  // Sort
+  var col = _supSortCol, asc = _supSortAsc;
+  rows.sort(function(a, b){
+    var va, vb;
+    if (col === 'name')   { va = a.name; vb = b.name; return asc ? va.localeCompare(vb) : vb.localeCompare(va); }
+    if (col === 'sales')  { va = a.s;    vb = b.s; }
+    else if (col === 'ach')    { va = a.ach;   vb = b.ach; }
+    else if (col === 'est')    { va = a.est;   vb = b.est; }
+    else if (col === 'estpct') { va = a.estpct; vb = b.estpct; }
+    else if (col === 'ms')     { va = a.ms;    vb = b.ms; }
+    else { va = a.ach; vb = b.ach; }
+    return asc ? va - vb : vb - va;
+  });
+
+  // Update sort indicators
+  var COLS = ['name','sales','ach','est','estpct','ms'];
+  COLS.forEach(function(c){
+    var el = document.getElementById('mk-sup-sort-'+c);
+    if (!el) return;
+    if (c === col) { el.textContent = asc ? '↑' : '↓'; el.style.opacity = '1'; el.style.color = '#7fa3f0'; }
+    else           { el.textContent = '⇅';  el.style.opacity = '.3'; el.style.color = ''; }
+  });
+
+  var el = document.getElementById('mk-sup'); if (!el) return;
+  el.innerHTML = rows.map(function(d, i){
+    var short = d.name.replace(/^คุณ/, '').split(' ')[0];
+    var ac  = d.ach    >= 100 ? '#34d27a' : d.ach    >= 70 ? '#f5a623' : '#f87171';
+    var ec  = d.estpct >= 100 ? '#34d27a' : d.estpct >= 70 ? '#fbbf24' : '#f87171';
+    var mc  = d.ms >= 40 ? '#4ade80' : d.ms >= 25 ? '#fbbf24' : '#f87171';
+    var achBg  = d.ach    >= 100 ? 'rgba(52,210,122,0.12)'  : d.ach    >= 70 ? 'rgba(245,166,35,0.12)'  : 'rgba(248,113,113,0.1)';
+    var estBg  = d.estpct >= 100 ? 'rgba(52,210,122,0.12)'  : d.estpct >= 70 ? 'rgba(245,166,35,0.12)'  : 'rgba(248,113,113,0.1)';
+    var msBg   = d.ms     >= 40  ? 'rgba(74,222,128,0.1)'   : d.ms     >= 25  ? 'rgba(251,191,36,0.1)'   : 'rgba(248,113,113,0.08)';
+    return '<div class="mgr-sup-row" style="display:grid;grid-template-columns:32px 1fr 100px 70px 100px 70px 64px;gap:4px;padding:9px 16px;border-bottom:.5px solid rgba(255,255,255,0.04);align-items:center">'+
+      // rank
+      '<div style="width:22px;height:22px;background:rgba(61,107,224,0.18);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#7fa3f0">'+(i+1)+'</div>'+
+      // name + branches
+      '<div style="min-width:0">'+
+        '<div style="font-size:13px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="'+esc(d.name)+'">'+esc(short)+'</div>'+
+        '<div style="font-size:9px;color:#4a5878;margin-top:1px">'+d.n.size+' สาขา</div>'+
+      '</div>'+
+      // ยอดขาย
+      '<div style="text-align:right;font-size:12px;font-weight:700;color:#e2e8f0;font-variant-numeric:tabular-nums">'+fK(d.s)+'</div>'+
+      // ACH%
+      '<div style="text-align:right"><span style="font-size:12px;font-weight:700;color:'+ac+';background:'+achBg+';padding:2px 7px;border-radius:20px">'+d.ach.toFixed(1)+'%</span></div>'+
+      // คาดการณ์
+      '<div style="text-align:right;font-size:12px;font-weight:700;color:'+ec+';font-variant-numeric:tabular-nums">'+fK(d.est)+'</div>'+
+      // Est%
+      '<div style="text-align:right"><span style="font-size:12px;font-weight:700;color:'+ec+';background:'+estBg+';padding:2px 7px;border-radius:20px">'+d.estpct.toFixed(1)+'%</span></div>'+
+      // MS%
+      '<div style="text-align:right"><span style="font-size:12px;font-weight:700;color:'+mc+';background:'+msBg+';padding:2px 7px;border-radius:20px">'+d.ms.toFixed(1)+'%</span></div>'+
+    '</div>';
+  }).join('');
+}
+
+// ── RANKING ──────────────────────────────────
+function mgrRenderRanking() {
+  var data = mgrGetData();
+  var scoped = mgrScopeMonth(data);
+  var ps = (document.getElementById('mgr-tps')||{}).value || '';
+  if (ps) scoped = scoped.filter(function(e){ return e.ps===ps; });
+
+  var maxDate = scoped.length ? scoped.reduce(function(mx,e){ var d=new Date(e.d+'T00:00:00'); return d>mx?d:mx; }, new Date(scoped[0].d+'T00:00:00')) : new Date();
+  var daysInMonth = new Date(maxDate.getFullYear(),maxDate.getMonth()+1,0).getDate();
+  var daysPassed = maxDate.getDate();
+
+  var byB = {};
+  scoped.forEach(function(e){
+    var bc=e.bc;
+    if(!byB[bc]) byB[bc]={bn:e.bn,ch:e.ch,bc:bc,ps:e.ps,tg:e.tg,br:{},tot:0,n:0,_lastD:'',openBeger:0,dailyDays:new Set()};
+    if(e.d>=(byB[bc]._lastD||'')){ byB[bc]._lastD=e.d; if(e.tg) byB[bc].tg=e.tg; }
+    var ob=isOpeningBalance(e);
+    if(ob){ byB[bc].openBeger+=(e.br&&e.br['Beger'])||0; }
+    else { byB[bc].dailyDays.add(e.d); }
+    if(e.br) Object.keys(e.br).forEach(function(b){ byB[bc].br[b]=(byB[bc].br[b]||0)+(e.br[b]||0); var v=e.br[b]||0; byB[bc].tot+=v; });
+    byB[bc].n++;
+  });
+
+  var rows = Object.values(byB).sort(function(a,b){
+    var bA=a.br['Beger']||0,bB=b.br['Beger']||0;
+    return (b.tg>0?bB/b.tg:0)-(a.tg>0?bA/a.tg:0);
+  });
+
+  // branchForecast — รองรับยอดยกมา
+  var _obActive = OPENING_BALANCE && maxDate.getMonth()===OPENING_BALANCE.month && maxDate.getFullYear()===OPENING_BALANCE.year;
+  function rkForecast(r){
+    var beger=r.br['Beger']||0;
+    if(_obActive){
+      var nDaily=r.dailyDays?r.dailyDays.size:0;
+      var dailyBeger=beger-(r.openBeger||0);
+      if(nDaily>0){ return Math.round((r.openBeger||0)+(dailyBeger/nDaily)*(daysInMonth-OPENING_BALANCE.lastDay)); }
+      return beger;
+    }
+    return daysPassed>0?Math.round(beger/daysPassed*daysInMonth):beger;
+  }
+
+  // KPI
+  var totAll=rows.reduce(function(a,r){return a+(r.br['Beger']||0);},0);
+  var tgtAll=rows.reduce(function(a,r){return a+r.tg;},0);
+  var achAll=tgtAll>0?(totAll/tgtAll*100):0;
+  var above=rows.filter(function(r){return r.tg>0&&(r.br['Beger']||0)/r.tg>=1;}).length;
+  var foreAll=rows.reduce(function(a,r){return a+rkForecast(r);},0);
+  var fpa=tgtAll>0?(foreAll/tgtAll*100):0;
+  var kpiEl=document.getElementById('mk-rank-kpi');
+  if(kpiEl) kpiEl.innerHTML=[
+    {label:'ยอดรวม MTD',val:'฿'+fK(totAll),sub:'',col:'green'},
+    {label:'ACH%',val:achAll.toFixed(1)+'%',sub:'',col:achAll>=100?'green':achAll>=70?'amber':'red'},
+    {label:'สาขาถึงเป้า',val:above+' / '+rows.length,sub:'สาขา',col:'blue'},
+    {label:'คาดการณ์ ACH%',val:fpa.toFixed(1)+'%',sub:'สิ้นเดือน',col:fpa>=100?'green':fpa>=70?'amber':'red'}
+  ].map(function(k){
+    return '<div class="mgr-kpi-card '+k.col+'"><div class="mgr-kpi-label">'+k.label+'</div>'+
+      '<div class="mgr-kpi-val">'+k.val+'</div><div class="mgr-kpi-sub">'+k.sub+'</div></div>';
+  }).join('');
+
+  var tableEl=document.getElementById('mk-rank-table');
+  if(!tableEl) return;
+  tableEl.innerHTML=rows.map(function(r,i){
+    var beger=r.br['Beger']||0; var ach=r.tg>0?(beger/r.tg*100):0;
+    var fore=rkForecast(r);
+    var fp=r.tg>0?(fore/r.tg*100):0;
+    var totBr=r.tot; var ms=totBr>0?(beger/totBr*100):0;
+    var ac=ach>=100?'#34d27a':ach>=70?'#f5a623':'#f87171';
+    var fc=fp>=100?'#34d27a':fp>=70?'#fbbf24':'#f87171';
+    var short=(r.bn||r.bc).replace(/^บริษัท|^หจก\./,'').replace(/จำกัด.*/,'').replace(/Homepro|Thai Watsadu|Global House|DoHome|HomeHub|Megahome/g,'').replace(/\s+/g,' ').trim();
+    if(short.length>22) short=short.slice(0,22)+'…';
+    return '<div class="mgr-table-row" onclick="showBranch(\"'+r.bc+'\",\"'+r.ch+'\")" style="cursor:pointer">'+
+      '<div style="font-size:11px;color:#4a5878;font-weight:600">'+(i+1)+'</div>'+
+      '<div><div style="font-size:12px;font-weight:600;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="'+esc(r.bn||r.bc)+'">'+short+'</div>'+
+        '<div style="font-size:9px;color:#4a5878;margin-top:1px">'+r.ch+(r.ps?' · '+r.ps.replace(/^คุณ/,'').split(' ')[0]:'')+'</div></div>'+
+      '<div style="text-align:right;font-size:11px;font-weight:700;color:#e2e8f0;font-variant-numeric:tabular-nums">'+fK(beger)+'</div>'+
+      '<div style="text-align:right"><span style="font-size:11px;font-weight:700;color:'+ac+'">'+ach.toFixed(0)+'%</span></div>'+
+      '<div style="text-align:right;font-size:11px;color:'+fc+';font-variant-numeric:tabular-nums">'+fK(fore)+'</div>'+
+      '<div style="text-align:right"><span style="font-size:11px;font-weight:700;color:'+fc+'">'+fp.toFixed(0)+'%</span></div>'+
+      '<div style="text-align:right;font-size:11px;color:#7ea890">'+ms.toFixed(1)+'%</div>'+
+    '</div>';
+  }).join('');
+}
+
+// ── MISSING ───────────────────────────────────
+function mgrMissDate(mode) {
+  var fmt=function(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
+  var today=new Date(), yest=new Date(today); yest.setDate(yest.getDate()-1);
+  var pick=document.getElementById('mk-date-pick');
+  var btnT=document.getElementById('mk-btn-today'), btnY=document.getElementById('mk-btn-yest');
+  var activeS='flex:1;padding:7px;border-radius:8px;border:.5px solid rgba(127,163,240,0.4);background:rgba(61,107,224,0.2);color:#7fa3f0;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit';
+  var idleS='flex:1;padding:7px;border-radius:8px;border:.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:#8893b0;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit';
+  if(mode==='today'){ _mgrMissDate=fmt(today); if(pick)pick.value=fmt(today); if(btnT)btnT.style.cssText=activeS; if(btnY)btnY.style.cssText=idleS; }
+  else if(mode==='yesterday'){ _mgrMissDate=fmt(yest); if(pick)pick.value=fmt(yest); if(btnT)btnT.style.cssText=idleS; if(btnY)btnY.style.cssText=activeS; }
+  else { _mgrMissDate=pick?pick.value:''; if(btnT)btnT.style.cssText=idleS; if(btnY)btnY.style.cssText=idleS; }
+  mgrMissRefresh();
+}
+
+function mgrHeatMode(mode) {
+  _mgrHeatMode=mode;
+  var bM=document.getElementById('mkh-miss'), bS=document.getElementById('mkh-sent');
+  var onS='padding:3px 10px;border-radius:8px;border:none;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit';
+  if(mode==='miss'){ if(bM)bM.style.cssText=onS+'background:rgba(248,113,113,0.25);color:#f87171;'; if(bS)bS.style.cssText=onS+'background:transparent;color:#8893b0;'; }
+  else { if(bM)bM.style.cssText=onS+'background:transparent;color:#8893b0;'; if(bS)bS.style.cssText=onS+'background:rgba(52,210,122,0.2);color:#34d27a;'; }
+  mgrMissRefresh();
+}
+
+function mgrMissRefresh() {
+  var fmt=function(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
+  var todayStr=_mgrMissDate||fmt(new Date());
+  var checkDate=new Date(todayStr+'T00:00:00');
+  var missChain=(document.getElementById('mgr-fc')||{}).value||'';
+  var missBranch=(document.getElementById('mgr-fbr')||{}).value||'';
+  var missSup=(document.getElementById('mgr-fps')||{}).value||'';
+
+  // update label
+  var thM=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  var lbl=document.getElementById('mk-miss-date-lbl');
+  if(lbl) lbl.textContent='🗓 '+checkDate.getDate()+' '+thM[checkDate.getMonth()]+' '+(checkDate.getFullYear()+543);
+
+  // build 30-day window
+  var days=[];
+  for(var i=29;i>=0;i--){var d=new Date(checkDate);d.setDate(d.getDate()-i);days.push(fmt(d));}
+  var startDate=days[0];
+
+  // submitted map
+  var submittedMap={};
+  SD.forEach(function(e){if(!submittedMap[e.bc])submittedMap[e.bc]=new Set();submittedMap[e.bc].add(e.d);});
+
+  // branch index
+  var branchIndex={};
+  Object.keys(BRANCHES).forEach(function(chain){
+    if(missChain&&chain!==missChain) return;
+    Object.keys(BRANCHES[chain]).forEach(function(bc){
+      if(missBranch&&bc!==missBranch) return;
+      var info=BRANCHES[chain][bc]; var sup=info[5]||'';
+      if(missSup&&sup!==missSup) return;
+      branchIndex[bc]={bc:bc,ch:chain,bn:info[0],ps:sup,submitted:submittedMap[bc]||new Set()};
+    });
+  });
+  SD.forEach(function(e){
+    if(missChain&&e.ch!==missChain) return;
+    if(missBranch&&e.bc!==missBranch) return;
+    if(missSup&&e.ps!==missSup) return;
+    if(!branchIndex[e.bc]) branchIndex[e.bc]={bc:e.bc,ch:e.ch,bn:e.bn,ps:e.ps||'',submitted:submittedMap[e.bc]||new Set()};
+  });
+
+  var allB=Object.values(branchIndex);
+  var branchStats=allB.map(function(b){
+    var miss=0; days.forEach(function(d){if(!b.submitted.has(d))miss++;});
+    var streak=0; for(var i=days.length-1;i>=0;i--){if(!b.submitted.has(days[i]))streak++;else break;}
+    var rate=Math.round((days.length-miss)/days.length*100);
+    var lastSent=''; for(var j=days.length-1;j>=0;j--){if(b.submitted.has(days[j])){lastSent=days[j];break;}}
+    return Object.assign({},b,{missCount:miss,streak:streak,rate:rate,lastSent:lastSent});
+  });
+
+  var sentToday=branchStats.filter(function(b){return b.submitted.has(todayStr);}).length;
+  var missToday=branchStats.length-sentToday;
+  var rateToday=branchStats.length>0?(sentToday/branchStats.length*100).toFixed(1):0;
+  var streakAlert=branchStats.filter(function(b){return b.streak>=3;}).length;
+  var neverSent=branchStats.filter(function(b){return b.lastSent==='';}).length;
+
+  var e=function(id){return document.getElementById(id);};
+  if(e('mk-miss-ok')) e('mk-miss-ok').textContent=sentToday;
+  if(e('mk-miss-no')) e('mk-miss-no').textContent=missToday;
+  if(e('mk-miss-bar')) e('mk-miss-bar').style.width=Math.min(rateToday,100)+'%';
+  if(e('mk-miss-rate-lbl')) e('mk-miss-rate-lbl').textContent='อัตราส่ง '+rateToday+'%';
+  if(e('mk-miss-streak')) e('mk-miss-streak').textContent=streakAlert;
+  if(e('mk-miss-never')) e('mk-miss-never').textContent=neverSent;
+
+  // heatmap
+  var shortDays=days.slice(-8);
+  var sorted;
+  if(_mgrHeatMode==='miss'){
+    sorted=branchStats.slice().sort(function(a,b){
+      var am=!a.submitted.has(todayStr)?1:0,bm=!b.submitted.has(todayStr)?1:0;
+      if(bm!==am)return bm-am; return b.streak-a.streak;
+    });
+  } else {
+    sorted=branchStats.slice().sort(function(a,b){
+      var as=a.submitted.has(todayStr)?1:0,bs=b.submitted.has(todayStr)?1:0;
+      if(bs!==as)return bs-as; return (b.lastSent||'')>(a.lastSent||'')?1:-1;
+    });
+  }
+
+  var CHAIN_BADGE_MAP={'DoHome':['DH','#f97316'],'DoHome Togo':['DH+','#fb923c'],'Homepro':['HP','#22c55e'],'HomePro':['HP','#22c55e'],'Thai Watsadu':['TWD','#3b82f6'],'Global House':['GH','#a855f7'],'Megahome':['MH','#ec4899'],'HomeHub':['HH','#14b8a6'],'บุญถาวร':['บุญถ.','#eab308'],'ฮาร์ดแวร์เฮ้าส์':['HW','#64748b'],'โฮมบุญ':['HB','#06b6d4'],'โฮมเพ้นท์':['HP2','#c084fc'],'ศิริมหาชัย':['ศิริ','#f43f5e'],'Homeshop':['HS','#10b981']};
+  function cb(ch){var en=CHAIN_BADGE_MAP[ch]||[ch.slice(0,3),'#7fa3f0'];return '<span style="background:'+en[1]+'22;color:'+en[1]+';font-size:8px;font-weight:700;padding:1px 4px;border-radius:4px;margin-right:4px;flex-shrink:0">'+en[0]+'</span>';}
+  function sBN(bn){return bn.replace(/^บริษัท\s+/,'').replace(/^หจก\.\s*/,'').replace(/HomePro(\s+Products)?/g,'').replace(/Homepro/g,'').replace(/Thai\s*Watsadu|Global\s*House|DoHome\s+Togo|DoHome/g,'').replace(/สาขา/g,'').replace(/\s*จำกัด.*/g,'').replace(/\s+/g,' ').trim();}
+
+  var hmHTML='<table style="border-collapse:collapse;width:100%"><thead><tr><td style="padding:2px 6px;font-size:9px;color:#4a5878;font-weight:600;width:220px">สาขา</td>';
+  shortDays.forEach(function(d){var dd=new Date(d+'T00:00:00');var isC=(d===todayStr);hmHTML+='<td style="padding:2px 2px;text-align:center;font-size:9px;color:'+(isC?'#7fa3f0':'#4a5878')+';font-weight:'+(isC?700:600)+';white-space:nowrap">'+dd.getDate()+'</td>';});
+  hmHTML+='</tr></thead><tbody>';
+  sorted.forEach(function(b){
+    var isMiss=!b.submitted.has(todayStr);
+    hmHTML+='<tr><td style="padding:3px 4px"><div style="display:flex;align-items:center;max-width:200px">'+cb(b.ch)+'<span style="font-size:10px;color:'+(isMiss?'#d07878':'#4a9a6a')+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="'+esc(b.bn)+'">'+sBN(b.bn)+'</span></div></td>';
+    shortDays.forEach(function(d){var has=b.submitted.has(d);var isC=(d===todayStr);hmHTML+='<td style="padding:2px"><div style="height:20px;min-width:20px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;'+(has?'background:rgba(52,210,122,0.14);color:rgba(52,210,122,0.75)':'background:rgba(248,113,113,0.12);color:rgba(248,113,113,0.7)')+';'+(isC?'outline:1.5px solid rgba(127,163,240,0.6)':'')+'">'+(has?'✓':'✗')+'</div></td>';});
+    hmHTML+='</tr>';
+  });
+  hmHTML+='</tbody></table>';
+  var hEl=document.getElementById('mk-heatmap'); if(hEl) hEl.innerHTML=hmHTML;
+}
+// ═══════════════════════════════════════════════
 </script>
 
 <!-- Load chart libs AFTER all HTML + inline JS -->
@@ -4238,6 +5715,14 @@ function updateTitle(){
 
     <!-- Brand breakdown (ซ่อน — Market Share แสดงอยู่แล้ว) -->
     <div style="display:none"><div id="sm-brands"></div></div>
+
+    <!-- วันขาดส่งเดือนนี้ (แบบเล็ก บรรทัดเดียว) -->
+    <div id="sm-missing-days" style="display:none;align-items:center;gap:6px;padding:0 4px 12px;flex-wrap:wrap">
+      <span style="font-size:10px;color:#5c6480">📅 เดือนนี้ขาดส่ง</span>
+      <span id="sm-missing-count" style="font-size:10px;color:#f87171;font-weight:700"></span>
+      <span style="font-size:10px;color:#4a5878">—</span>
+      <span id="sm-missing-list" style="font-size:10px;color:#7a86a8;text-decoration:underline;cursor:pointer"></span>
+    </div>
 
     <!-- Alert banner -->
     <div id="sm-alert" style="display:none;border-radius:12px;padding:12px 14px;margin-bottom:12px;text-align:center"></div>
@@ -4953,5 +6438,408 @@ async function confirmImport(){
     </div>
   </div>
 </div>
+
+<!-- ═══════════════════════════════════════════════
+     MANAGER DESKTOP DASHBOARD
+═══════════════════════════════════════════════ -->
+<div id="mgr-desktop">
+
+  <!-- Top Banner: แบรนด์ + ชื่อห้าง/สาขา อยู่แถวเดียวกันบนสุด -->
+  <div id="mgr-chain-banner">
+    <div id="mgr-banner-brand">
+      <img id="mgr-banner-logo" src="data:image/png;base64,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" alt="Beger">
+      <div id="mgr-banner-brand-text">
+        <div id="mgr-banner-title">Sales out : Daily Report</div>
+        <div id="mgr-nav-updated" style="font-size:9px;color:rgba(255,255,255,0.55);font-weight:500;margin-top:1px;white-space:nowrap;display:flex;align-items:center;gap:4px">
+          <span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:#34d27a"></span>
+          <span id="mgr-updated-txt">กำลังโหลด...</span>
+        </div>
+      </div>
+    </div>
+    <div id="mgr-banner-chain">
+      <span id="mgr-chain-banner-icon">🌐</span> <span id="mgr-chain-banner-text">MDT ALL</span><span id="mgr-chain-banner-branch"></span>
+    </div>
+    <button id="mgr-nav-toggle" onclick="mgrToggleNav()" title="ซ่อน/แสดงแถบเมนู">▾</button>
+  </div>
+
+  <!-- Top Navbar -->
+  <nav id="mgr-nav">
+    <div class="mgr-tab on" id="mtab-overview" onclick="mgrSwitchTab('overview')">📊 ภาพรวม</div>
+    <div class="mgr-tab" id="mtab-ranking" onclick="mgrSwitchTab('ranking')">🏆 รายสาขา</div>
+    <div class="mgr-tab" id="mtab-missing" onclick="mgrSwitchTab('missing')">⚠️ ขาดส่ง</div>
+    <div id="mgr-nav-right">
+      <!-- Filters -->
+      <div class="mgr-filter-bar">
+        <select class="mgr-sel" id="mgr-fm" onchange="mgrRefresh()">
+          <option value="">📅 ทุกเดือน</option>
+          <option value="0">มกราคม</option><option value="1">กุมภาพันธ์</option>
+          <option value="2">มีนาคม</option><option value="3">เมษายน</option>
+          <option value="4">พฤษภาคม</option><option value="5">มิถุนายน</option>
+          <option value="6">กรกฎาคม</option><option value="7">สิงหาคม</option>
+          <option value="8">กันยายน</option><option value="9">ตุลาคม</option>
+          <option value="10">พฤศจิกายน</option><option value="11">ธันวาคม</option>
+        </select>
+        <select class="mgr-sel" id="mgr-fc" onchange="mgrPopulateBranches();mgrUpdateChainBanner();mgrRefresh()">
+          <option value="">🏪 ทุก Chain</option>
+          <option value="Homepro">Homepro</option>
+          <option value="Thai Watsadu">Thai Watsadu</option>
+          <option value="Global House">Global House</option>
+          <option value="Megahome">Megahome</option>
+          <option value="DoHome">DoHome</option>
+          <option value="DoHome Togo">DoHome Togo</option>
+          <option value="HomeHub">HomeHub</option>
+          <option value="บุญถาวร">บุญถาวร</option>
+          <option value="ฮาร์ดแวร์เฮ้าส์">ฮาร์ดแวร์เฮ้าส์</option>
+          <option value="โฮมบุญ">โฮมบุญ</option>
+          <option value="โฮมเพ้นท์">โฮมเพ้นท์</option>
+          <option value="ศิริมหาชัย">ศิริมหาชัย</option>
+          <option value="Homeshop">Homeshop</option>
+        </select>
+        <select class="mgr-sel" id="mgr-fbr" onchange="mgrUpdateChainBanner();mgrRefresh()">
+          <option value="">🏬 ทุกสาขา</option>
+        </select>
+        <select class="mgr-sel" id="mgr-fps" onchange="mgrRefresh()">
+          <option value="">👤 ทุก Supervisor</option>
+        </select>
+      </div>
+      <button class="mgr-logout-btn" onclick="lsLogout()">🔓 ออกจากระบบ</button>
+    </div>
+  </nav>
+
+  <!-- Content -->
+  <div id="mgr-content" style="position:relative">
+
+    <!-- Skeleton Loading Overlay -->
+    <div id="mgr-skeleton">
+      <!-- KPI skeleton -->
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px;margin-top:4px">
+        <div style="background:#0d1228;border-radius:14px;padding:16px 18px;border:.5px solid rgba(255,255,255,0.07)">
+          <div class="mgr-sk" style="width:55%;height:10px;margin-bottom:14px"></div>
+          <div class="mgr-sk" style="width:80%;height:24px;margin-bottom:8px"></div>
+          <div class="mgr-sk" style="width:30%;height:11px"></div>
+        </div>
+        <div style="background:#0d1228;border-radius:14px;padding:16px 18px;border:.5px solid rgba(255,255,255,0.07)">
+          <div class="mgr-sk" style="width:45%;height:10px;margin-bottom:14px"></div>
+          <div class="mgr-sk" style="width:75%;height:24px;margin-bottom:8px"></div>
+          <div class="mgr-sk" style="width:30%;height:11px"></div>
+        </div>
+        <div style="background:#0d1228;border-radius:14px;padding:16px 18px;border:.5px solid rgba(255,255,255,0.07)">
+          <div class="mgr-sk" style="width:50%;height:10px;margin-bottom:14px"></div>
+          <div class="mgr-sk" style="width:60%;height:24px;margin-bottom:10px"></div>
+          <div class="mgr-sk" style="width:100%;height:5px"></div>
+        </div>
+        <div style="background:#0d1228;border-radius:14px;padding:16px 18px;border:.5px solid rgba(255,255,255,0.07)">
+          <div class="mgr-sk" style="width:60%;height:10px;margin-bottom:14px"></div>
+          <div class="mgr-sk" style="width:78%;height:24px;margin-bottom:8px"></div>
+          <div class="mgr-sk" style="width:35%;height:11px"></div>
+        </div>
+        <div style="background:#0d1228;border-radius:14px;padding:16px 18px;border:.5px solid rgba(255,255,255,0.07)">
+          <div class="mgr-sk" style="width:50%;height:10px;margin-bottom:14px"></div>
+          <div class="mgr-sk" style="width:70%;height:24px;margin-bottom:8px"></div>
+          <div class="mgr-sk" style="width:30%;height:11px"></div>
+        </div>
+      </div>
+      <!-- Charts row skeleton -->
+      <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:16px;margin-bottom:16px">
+        <div style="background:#0d1228;border-radius:14px;padding:18px;border:.5px solid rgba(255,255,255,0.07);height:240px">
+          <div class="mgr-sk" style="width:40%;height:13px;margin-bottom:20px"></div>
+          <div class="mgr-sk" style="width:100%;height:170px;border-radius:8px"></div>
+        </div>
+        <div style="background:#0d1228;border-radius:14px;padding:18px;border:.5px solid rgba(255,255,255,0.07);height:240px">
+          <div class="mgr-sk" style="width:50%;height:13px;margin-bottom:20px"></div>
+          <div class="mgr-sk" style="width:100%;height:14px;margin-bottom:12px"></div>
+          <div class="mgr-sk" style="width:90%;height:14px;margin-bottom:12px"></div>
+          <div class="mgr-sk" style="width:95%;height:14px;margin-bottom:12px"></div>
+          <div class="mgr-sk" style="width:80%;height:14px;margin-bottom:12px"></div>
+          <div class="mgr-sk" style="width:85%;height:14px"></div>
+        </div>
+        <div style="background:#0d1228;border-radius:14px;padding:18px;border:.5px solid rgba(255,255,255,0.07);height:240px">
+          <div class="mgr-sk" style="width:55%;height:13px;margin-bottom:20px"></div>
+          <div class="mgr-sk" style="width:100%;height:12px;margin-bottom:14px"></div>
+          <div class="mgr-sk" style="width:95%;height:12px;margin-bottom:14px"></div>
+          <div class="mgr-sk" style="width:88%;height:12px;margin-bottom:14px"></div>
+          <div class="mgr-sk" style="width:92%;height:12px"></div>
+        </div>
+      </div>
+      <!-- Chain row skeleton -->
+      <div style="display:grid;grid-template-columns:1fr 320px;gap:16px">
+        <div style="background:#0d1228;border-radius:14px;padding:18px;border:.5px solid rgba(255,255,255,0.07);height:200px">
+          <div class="mgr-sk" style="width:35%;height:13px;margin-bottom:20px"></div>
+          <div class="mgr-sk" style="width:100%;height:14px;margin-bottom:14px"></div>
+          <div class="mgr-sk" style="width:100%;height:14px;margin-bottom:14px"></div>
+          <div class="mgr-sk" style="width:100%;height:14px;margin-bottom:14px"></div>
+          <div class="mgr-sk" style="width:100%;height:14px"></div>
+        </div>
+        <div style="background:#0d1228;border-radius:14px;padding:18px;border:.5px solid rgba(255,255,255,0.07);height:200px;display:flex;align-items:center;justify-content:center">
+          <div class="mgr-sk" style="width:140px;height:140px;border-radius:50%"></div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ── TAB: ภาพรวม ── -->
+    <div class="mgr-pg on" id="mgr-pg-overview">
+
+      <!-- KPI Strip -->
+      <div class="mgr-kpi-grid" style="margin-top:4px">
+        <div class="mgr-kpi-card green">
+          <div class="mgr-kpi-label">ยอด Beger MTD</div>
+          <div class="mgr-kpi-val" id="mk1">0</div>
+          <div class="mgr-kpi-sub">บาท</div>
+        </div>
+        <div class="mgr-kpi-card blue">
+          <div class="mgr-kpi-label">เป้าหมาย</div>
+          <div class="mgr-kpi-val" id="mk2">0</div>
+          <div class="mgr-kpi-sub">บาท</div>
+        </div>
+        <div class="mgr-kpi-card amber">
+          <div class="mgr-kpi-label">ACH% ปัจจุบัน</div>
+          <div class="mgr-kpi-val" id="mk3">0%</div>
+          <div class="mgr-kpi-pct" id="mk3-bar-wrap" style="margin-top:8px;background:rgba(255,255,255,0.07);border-radius:4px;height:5px;overflow:hidden"><div id="mk3-bar" style="height:5px;border-radius:4px;background:#f5a623;width:0%;transition:width .5s"></div></div>
+        </div>
+        <div class="mgr-kpi-card purple">
+          <div class="mgr-kpi-label">คาดการณ์สิ้นเดือน</div>
+          <div class="mgr-kpi-val" id="mk5">0</div>
+          <div class="mgr-kpi-pct" id="mk5pct" style="color:#a78bfa">0%</div>
+        </div>
+        <div class="mgr-kpi-card blue">
+          <div class="mgr-kpi-label">เฉลี่ย / วัน</div>
+          <div class="mgr-kpi-val" id="mk4">0</div>
+          <div class="mgr-kpi-sub">บาท</div>
+        </div>
+      </div>
+
+      <!-- Row: Trend + MS% -->
+      <div class="mgr-row3" style="margin-bottom:16px">
+        <!-- Trend chart -->
+        <div class="mgr-card">
+          <div class="mgr-card-hdr">
+            <div class="mgr-card-title">📈 แนวโน้มยอดสะสมรายวัน</div>
+          </div>
+          <div class="mgr-card-body" style="padding:14px">
+            <div style="position:relative;width:100%;height:200px">
+              <canvas id="mctr"></canvas>
+            </div>
+          </div>
+        </div>
+        <!-- MS% table -->
+        <div class="mgr-card">
+          <div class="mgr-card-hdr">
+            <div class="mgr-card-title">📊 Market Share</div>
+            <div id="mk-ms-beger" style="font-size:13px;font-weight:700;color:#7fa3f0"></div>
+          </div>
+          <div class="mgr-card-body" style="padding:8px 14px" id="mk-ms-table"></div>
+        </div>
+        <!-- DOW bars + Period -->
+        <div class="mgr-card">
+          <div class="mgr-card-hdr">
+            <div class="mgr-card-title">📅 ยอดเฉลี่ยรายวัน</div>
+          </div>
+          <div class="mgr-card-body" id="mk-dow"></div>
+          <!-- Period 10-day section -->
+          <div style="border-top:.5px solid rgba(255,255,255,0.06);margin:0 18px;padding:12px 0 16px">
+            <div style="font-size:10px;color:#5c6480;font-weight:600;margin-bottom:10px;letter-spacing:.3px">📦 ยอดแยกรายช่วง 10 วัน</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px" id="mk-period"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row: MS% trend + Daily sales trend -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+
+        <!-- ส่วนที่ 1: แนวโน้ม MS% -->
+        <div class="mgr-card">
+          <div class="mgr-card-hdr">
+            <div class="mgr-card-title">📈 แนวโน้ม MS% เบเยอร์ รายวัน</div>
+            <div style="font-size:10px;color:#4a5878;font-weight:500">เฉพาะวันที่มีข้อมูลคู่แข่ง</div>
+          </div>
+          <div class="mgr-card-body" style="padding:14px">
+            <div style="position:relative;width:100%;height:210px">
+              <canvas id="mcms"></canvas>
+            </div>
+            <div id="mcms-empty" style="display:none;color:rgba(255,255,255,0.3);font-size:12px;text-align:center;padding:60px 0">ยังไม่มีข้อมูลคู่แข่งสำหรับคำนวณ MS%<br><span style="font-size:10px;color:#4a5878">(กรอกยอดแบรนด์อื่นในวันเสาร์เพื่อให้กราฟแสดงผล)</span></div>
+          </div>
+        </div>
+
+        <!-- ส่วนที่ 2: แนวโน้มยอดขายรายวัน -->
+        <div class="mgr-card">
+          <div class="mgr-card-hdr">
+            <div class="mgr-card-title">📊 แนวโน้มยอดขายรายวัน</div>
+            <div style="display:flex;gap:12px;font-size:10px;color:#8893b0">
+              <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:#3d6be0"></span>ยอดรายวัน</span>
+              <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:0;border-top:2px dashed #f5a623"></span>แนวโน้ม</span>
+            </div>
+          </div>
+          <div class="mgr-card-body" style="padding:14px">
+            <div style="position:relative;width:100%;height:210px">
+              <canvas id="mcds"></canvas>
+            </div>
+            <div id="mcds-empty" style="display:none;color:rgba(255,255,255,0.3);font-size:12px;text-align:center;padding:60px 0">ยังไม่มีข้อมูลยอดขายรายวัน</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Row: Chain table + Donut chart -->
+      <div style="display:grid;grid-template-columns:1fr 320px;gap:16px;margin-bottom:16px">
+        <!-- Chain table -->
+        <div class="mgr-card">
+          <div class="mgr-card-hdr"><div class="mgr-card-title">🏪 เปรียบเทียบ Chain</div></div>
+          <div class="mgr-card-body" style="padding:8px 14px" id="mk-chain"></div>
+        </div>
+        <!-- Chain donut chart -->
+        <div class="mgr-card" style="display:flex;flex-direction:column;overflow:hidden">
+          <div class="mgr-card-hdr"><div class="mgr-card-title">🥧 สัดส่วนยอดขาย Chain</div></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:16px 16px 12px;overflow:hidden">
+            <div style="position:relative;width:160px;height:160px;flex-shrink:0;margin:0 auto">
+              <canvas id="mk-chain-donut" width="160" height="160" style="display:block"></canvas>
+              <div id="mk-chain-donut-center" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none">
+                <div id="mk-donut-label" style="font-size:11px;font-weight:700;color:#e2e8f0;text-align:center;line-height:1.3"></div>
+                <div id="mk-donut-val" style="font-size:13px;font-weight:800;color:#7fa3f0;text-align:center;margin-top:2px"></div>
+              </div>
+            </div>
+            <div id="mk-chain-legend" style="margin-top:14px;width:100%;display:flex;flex-direction:column;gap:1px;border-top:.5px solid rgba(255,255,255,0.05);padding-top:10px"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Supervisor Full Table -->
+      <div class="mgr-card" style="margin-bottom:16px">
+        <div class="mgr-card-hdr">
+          <div class="mgr-card-title">👤 PC Supervisor</div>
+        </div>
+        <!-- Table Header — sortable -->
+        <div id="mk-sup-hdr" style="display:grid;grid-template-columns:32px 1fr 100px 70px 100px 70px 64px;gap:4px;padding:8px 16px;border-bottom:.5px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02)">
+          <div style="font-size:9px;color:#4a5878;font-weight:600">#</div>
+          <div style="font-size:9px;color:#4a5878;font-weight:600;cursor:pointer;user-select:none" onclick="mgrSupSort('name')">
+            SUPERVISOR <span id="mk-sup-sort-name" style="opacity:.4">⇅</span></div>
+          <div style="font-size:9px;color:#4a5878;font-weight:600;text-align:right;cursor:pointer;user-select:none" onclick="mgrSupSort('sales')">
+            ยอดขาย MTD <span id="mk-sup-sort-sales" style="opacity:.4">⇅</span></div>
+          <div style="font-size:9px;color:#4a5878;font-weight:600;text-align:right;cursor:pointer;user-select:none" onclick="mgrSupSort('ach')">
+            ACH% <span id="mk-sup-sort-ach" style="opacity:.4">⇅</span></div>
+          <div style="font-size:9px;color:rgba(245,166,35,.8);font-weight:600;text-align:right;cursor:pointer;user-select:none" onclick="mgrSupSort('est')">
+            คาดการณ์ <span id="mk-sup-sort-est" style="opacity:.4">⇅</span></div>
+          <div style="font-size:9px;color:rgba(245,166,35,.8);font-weight:600;text-align:right;cursor:pointer;user-select:none" onclick="mgrSupSort('estpct')">
+            Est% <span id="mk-sup-sort-estpct" style="opacity:.4">⇅</span></div>
+          <div style="font-size:9px;color:rgba(126,200,160,.9);font-weight:600;text-align:right;cursor:pointer;user-select:none" onclick="mgrSupSort('ms')">
+            MS% <span id="mk-sup-sort-ms" style="opacity:.4">⇅</span></div>
+        </div>
+        <div id="mk-sup"></div>
+      </div>
+
+    </div><!-- end overview tab -->
+
+    <!-- ── TAB: รายสาขา ── -->
+    <div class="mgr-pg" id="mgr-pg-ranking">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0 16px" id="mk-rank-kpi"></div>
+      <div class="mgr-card">
+        <div class="mgr-card-hdr">
+          <div class="mgr-card-title">🏆 ตารางยอดขายรายสาขา</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <select class="mgr-sel" id="mgr-tps" onchange="mgrRefresh()">
+              <option value="">👤 ทุก Supervisor</option>
+            </select>
+          </div>
+        </div>
+        <div class="mgr-table-hdr">
+          <div>#</div><div>สาขา</div>
+          <div style="text-align:right">ยอด MTD</div>
+          <div style="text-align:right">ACH%</div>
+          <div style="text-align:right">คาดการณ์</div>
+          <div style="text-align:right">คาด%</div>
+          <div style="text-align:right">MS%</div>
+        </div>
+        <div id="mk-rank-table"></div>
+      </div>
+    </div><!-- end ranking tab -->
+
+    <!-- ── TAB: ขาดส่ง ── -->
+    <div class="mgr-pg" id="mgr-pg-missing">
+      <div style="display:grid;grid-template-columns:320px 1fr;gap:16px;margin-top:18px">
+        <!-- Left panel: controls + stats -->
+        <div style="display:flex;flex-direction:column;gap:12px">
+
+          <!-- Date selector -->
+          <div class="mgr-card">
+            <div class="mgr-card-hdr"><div class="mgr-card-title">📅 ตรวจสอบวันที่</div></div>
+            <div class="mgr-card-body">
+              <div style="display:flex;gap:8px;margin-bottom:10px">
+                <button onclick="mgrMissDate('today')" id="mk-btn-today"
+                  style="flex:1;padding:7px;border-radius:8px;border:.5px solid rgba(127,163,240,0.4);background:rgba(61,107,224,0.2);color:#7fa3f0;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">วันนี้</button>
+                <button onclick="mgrMissDate('yesterday')" id="mk-btn-yest"
+                  style="flex:1;padding:7px;border-radius:8px;border:.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:#8893b0;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">เมื่อวาน</button>
+              </div>
+              <input type="date" id="mk-date-pick" onchange="mgrMissDate('custom')"
+                style="width:100%;padding:8px 12px;font-size:13px;border:.5px solid rgba(255,255,255,0.1);border-radius:8px;background:#0a0d1a;color:#fff;font-family:inherit;outline:none">
+            </div>
+          </div>
+
+          <!-- Stats cards -->
+          <div class="mgr-card">
+            <div class="mgr-card-hdr"><div class="mgr-card-title" id="mk-miss-date-lbl">สถิติวันนี้</div></div>
+            <div class="mgr-card-body">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+                <div style="background:rgba(52,210,122,0.07);border-radius:10px;padding:12px;text-align:center;border:.5px solid rgba(52,210,122,0.15)">
+                  <div style="font-size:28px;font-weight:800;color:#34d27a" id="mk-miss-ok">—</div>
+                  <div style="font-size:10px;color:#34d27a;opacity:.7;margin-top:3px">✅ ส่งแล้ว</div>
+                </div>
+                <div style="background:rgba(248,113,113,0.07);border-radius:10px;padding:12px;text-align:center;border:.5px solid rgba(248,113,113,0.15)">
+                  <div style="font-size:28px;font-weight:800;color:#f87171" id="mk-miss-no">—</div>
+                  <div style="font-size:10px;color:#f87171;opacity:.7;margin-top:3px">❌ ยังไม่ส่ง</div>
+                </div>
+              </div>
+              <div style="background:rgba(255,255,255,0.05);border-radius:8px;height:8px;overflow:hidden;margin-bottom:6px">
+                <div id="mk-miss-bar" style="height:8px;border-radius:8px;background:linear-gradient(90deg,#1a7045,#34d27a);width:0%;transition:width .4s"></div>
+              </div>
+              <div style="font-size:11px;color:#5c6480;text-align:center" id="mk-miss-rate-lbl">อัตราส่ง 0%</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+                <div style="background:rgba(251,191,36,0.07);border-radius:8px;padding:8px;text-align:center;border:.5px solid rgba(251,191,36,0.15)">
+                  <div style="font-size:20px;font-weight:800;color:#fbbf24" id="mk-miss-streak">—</div>
+                  <div style="font-size:9px;color:#fbbf24;opacity:.6;margin-top:2px">ขาด ≥3 วันติด</div>
+                </div>
+                <div style="background:rgba(167,139,250,0.07);border-radius:8px;padding:8px;text-align:center;border:.5px solid rgba(167,139,250,0.15)">
+                  <div style="font-size:20px;font-weight:800;color:#a78bfa" id="mk-miss-never">—</div>
+                  <div style="font-size:9px;color:#a78bfa;opacity:.6;margin-top:2px">ไม่เคยส่งเลย</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- end left panel -->
+
+        <!-- Right: Heatmap -->
+        <div class="mgr-card" style="overflow:hidden">
+          <div class="mgr-card-hdr">
+            <div class="mgr-card-title">🗓 Heatmap การส่งยอด (30 วันล่าสุด)</div>
+            <div style="display:flex;background:rgba(255,255,255,0.05);border-radius:10px;padding:2px;gap:1px;border:.5px solid rgba(255,255,255,0.08)">
+              <button id="mkh-miss" onclick="mgrHeatMode('miss')"
+                style="padding:3px 10px;border-radius:8px;border:none;background:rgba(248,113,113,0.25);color:#f87171;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit">❌ ขาด</button>
+              <button id="mkh-sent" onclick="mgrHeatMode('sent')"
+                style="padding:3px 10px;border-radius:8px;border:none;background:transparent;color:#8893b0;font-size:10px;font-weight:600;cursor:pointer;font-family:inherit">✅ ส่ง</button>
+            </div>
+          </div>
+          <div style="overflow:auto;height:calc(100% - 48px);padding:12px 16px" id="mk-heatmap">
+            <div style="text-align:center;padding:40px;color:#5c6480;font-size:13px">กำลังโหลด...</div>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- end missing tab -->
+
+  </div><!-- end mgr-content -->
+
+  <!-- Floating data tools (มุมขวาล่าง) -->
+  <div id="mgr-datatools" style="position:fixed;right:18px;bottom:18px;z-index:480;display:flex;gap:8px">
+    <button onclick="doExport()" title="Export Excel (.xlsx)"
+      style="display:flex;align-items:center;gap:6px;padding:9px 14px;border-radius:10px;background:#145228;border:.5px solid rgba(52,210,122,0.45);color:#d6f5e2;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(0,0,0,0.45);transition:filter .15s" onmouseover="this.style.filter='brightness(1.18)'" onmouseout="this.style.filter='none'">
+      ⬇ Export
+    </button>
+    <button onclick="openClearModal()" title="ล้างข้อมูลทั้งหมด (ต้องใส่ PIN)"
+      style="display:flex;align-items:center;gap:6px;padding:9px 14px;border-radius:10px;background:rgba(204,30,46,0.18);border:.5px solid rgba(204,30,46,0.45);color:#f8a0a0;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(0,0,0,0.45);transition:background .15s" onmouseover="this.style.background='rgba(204,30,46,0.3)'" onmouseout="this.style.background='rgba(204,30,46,0.18)'">
+      🗑 ล้างข้อมูล
+    </button>
+  </div>
+</div><!-- end mgr-desktop -->
+
 </body>
 </html>
