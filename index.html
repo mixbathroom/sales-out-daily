@@ -260,7 +260,7 @@ select option{background:var(--bg2);color:var(--tx)}
 .ssel-wrap select.mgr-sel{display:none!important}
 .ssel-display{width:108px;max-width:108px;box-sizing:border-box;font-size:10px;padding:5px 8px;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;color:rgba(200,212,232,0.7);user-select:none;display:block}
 .ssel-display:focus{border-color:rgba(127,163,240,0.5);outline:none}
-.ssel-panel{position:absolute;top:calc(100% + 4px);left:0;min-width:170px;max-height:280px;background:#101733;border:.5px solid rgba(255,255,255,0.1);border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,0.45);z-index:200;overflow:hidden;display:none;flex-direction:column}
+.ssel-panel{position:absolute;top:calc(100% + 4px);left:0;min-width:170px;max-height:280px;background:#101733;border:.5px solid rgba(255,255,255,0.1);border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,0.45);z-index:9999;overflow:hidden;display:none;flex-direction:column}
 .ssel-panel.show{display:flex}
 .ssel-search-inp{width:100%;box-sizing:border-box;padding:8px 10px;font-size:11px;font-family:inherit;background:rgba(255,255,255,0.04);border:none;border-bottom:.5px solid rgba(255,255,255,0.1);color:#e8edf8;outline:none}
 .ssel-search-inp::placeholder{color:#5c6480}
@@ -345,7 +345,7 @@ select option{background:var(--bg2);color:var(--tx)}
   .mgr-filter-bar{flex:1;min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
   .mgr-filter-bar::-webkit-scrollbar{display:none}
   .mgr-sel,.ssel-wrap{flex-shrink:0}
-  .ssel-display{width:74px;max-width:74px;font-size:9px;padding:5px 6px}
+  .ssel-display{width:96px;max-width:96px;font-size:11px;padding:9px 8px;min-height:20px}
   #mgr-nav .mgr-logout-btn{display:none!important}
   #mgr-datatools{flex-direction:row;align-items:stretch;left:8px;right:8px;bottom:8px;gap:6px}
   #mgr-datatools button{flex:1;padding:8px 4px;font-size:9.5px;gap:3px;justify-content:center;white-space:nowrap}
@@ -4854,9 +4854,33 @@ function enhanceSearchSelect(id) {
     }
   }
 
+  function positionPanel() {
+    var r = disp.getBoundingClientRect();
+    var pw = Math.max(170, r.width);
+    panel.style.minWidth = pw + 'px';
+    var left = r.left;
+    // ถ้ากางขวาแล้วล้นจอ ให้ชิดขวาของ viewport แทน (กันถูกตัดขอบ)
+    if (left + pw > window.innerWidth - 8) left = Math.max(8, window.innerWidth - 8 - pw);
+    var top = r.bottom + 4;
+    // ถ้าด้านล่างไม่พอ เปิดขึ้นด้านบนแทน
+    var maxH = 280;
+    if (top + maxH > window.innerHeight - 8 && r.top - maxH - 4 > 8) {
+      top = r.top - 4;
+      panel.style.transform = 'translateY(-100%)';
+    } else {
+      panel.style.transform = 'none';
+    }
+    panel.style.left = left + 'px';
+    panel.style.top = top + 'px';
+  }
+
   function openPanel() {
     searchInp.value = '';
     renderList('');
+    // ย้าย panel ไปไว้ที่ body ตรงๆ เพื่อไม่ให้ถูก overflow:hidden ของการ์ด/คอนเทนเนอร์ตัดทิ้ง
+    if (panel.parentNode !== document.body) document.body.appendChild(panel);
+    panel.style.position = 'fixed';
+    positionPanel();
     panel.classList.add('show');
     setTimeout(function () { searchInp.focus(); }, 0);
   }
@@ -4873,7 +4897,9 @@ function enhanceSearchSelect(id) {
   });
   searchInp.addEventListener('input', function () { renderList(searchInp.value); });
   searchInp.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closePanel(); disp.focus(); } });
-  document.addEventListener('mousedown', function (e) { if (!wrap.contains(e.target)) closePanel(); });
+  document.addEventListener('mousedown', function (e) { if (!wrap.contains(e.target) && !panel.contains(e.target)) closePanel(); });
+  window.addEventListener('scroll', function () { if (panel.classList.contains('show')) closePanel(); }, true);
+  window.addEventListener('resize', function () { if (panel.classList.contains('show')) positionPanel(); });
 
   // เผื่อโค้ดอื่นเปลี่ยน sel.value/options ตรงๆ แล้วต้องอัปเดตข้อความที่แสดง
   sel._sselRefresh = function () { disp.textContent = curText(); };
