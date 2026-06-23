@@ -350,7 +350,10 @@ select option{background:var(--bg2);color:var(--tx)}
   .mgr-filter-bar::-webkit-scrollbar{display:none}
   .mgr-sel,.ssel-wrap{flex-shrink:0}
   .ssel-display{width:74px;max-width:74px;font-size:9px;padding:5px 6px}
-  .mgr-logout-btn{flex-shrink:0;padding:5px 9px;font-size:10px}
+  #mgr-nav .mgr-logout-btn{display:none!important}
+  #mgr-datatools{flex-direction:column;align-items:stretch;right:10px;bottom:10px;gap:6px}
+  #mgr-datatools button{padding:8px 12px;font-size:11px;justify-content:center}
+  #mgr-logout-btn-mobile{display:flex!important}
 
   .mgr-pg{padding:10px 10px 76px}
 
@@ -6889,6 +6892,10 @@ async function confirmImport(){
     <button onclick="openClearModal()" title="ล้างข้อมูลทั้งหมด (ต้องใส่ PIN)"
       style="display:flex;align-items:center;gap:6px;padding:9px 14px;border-radius:10px;background:rgba(204,30,46,0.18);border:.5px solid rgba(204,30,46,0.45);color:#f8a0a0;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(0,0,0,0.45);transition:background .15s" onmouseover="this.style.background='rgba(204,30,46,0.3)'" onmouseout="this.style.background='rgba(204,30,46,0.18)'">
       🗑 ล้างข้อมูล
+    </button>
+    <button id="mgr-logout-btn-mobile" onclick="lsLogout()" title="ออกจากระบบ"
+      style="display:none;align-items:center;gap:6px;padding:9px 14px;border-radius:10px;background:rgba(61,107,224,0.18);border:.5px solid rgba(127,163,240,0.45);color:#bcd0f7;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(0,0,0,0.45)">
+      🔓 ออกจากระบบ
     </button>
   </div>
 </div><!-- end mgr-desktop -->
