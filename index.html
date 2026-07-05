@@ -3797,7 +3797,7 @@ function mgrRenderOverview() {
   if(el('mk3')){ el('mk3').textContent = pct.toFixed(1)+'%'; el('mk3').style.color = pct>=100?'#34d27a':pct>=70?'#f5a623':'#f87171'; }
   if(el('mk3-bar')) el('mk3-bar').style.width = Math.min(pct,100)+'%';
   if(el('mk4')) el('mk4').textContent = fK2(avg);
-  if(el('mk5')) el('mk5').textContent = fK2(fore);
+  if(el('mk5')) el('mk5').textContent = fK2(fore)+' บาท';
   if(el('mk5pct')){ el('mk5pct').textContent = forePct.toFixed(1)+'%'; el('mk5pct').style.color = forePct>=100?'#34d27a':forePct>=70?'#f5a623':'#f87171'; }
 
   // Trend chart
@@ -4727,9 +4727,10 @@ function mgrMissRefresh() {
   var lbl=document.getElementById('mk-miss-date-lbl');
   if(lbl) lbl.textContent='🗓 '+checkDate.getDate()+' '+thM[checkDate.getMonth()]+' '+(checkDate.getFullYear()+543);
 
-  // build 30-day window
+  // build window: เฉพาะเดือนของวันที่ตรวจสอบ (ตั้งแต่วันที่ 1 ถึงวันที่เลือก) — ไม่รวมเดือนก่อน
   var days=[];
-  for(var i=29;i>=0;i--){var d=new Date(checkDate);d.setDate(d.getDate()-i);days.push(fmt(d));}
+  var _mStart=new Date(checkDate.getFullYear(), checkDate.getMonth(), 1);
+  for(var _d=new Date(_mStart); _d<=checkDate; _d.setDate(_d.getDate()+1)){ days.push(fmt(_d)); }
   var startDate=days[0];
 
   // submitted map
@@ -5771,8 +5772,8 @@ async function confirmImport(){
         </div>
         <div class="mgr-kpi-card purple">
           <div class="mgr-kpi-label">คาดการณ์สิ้นเดือน</div>
-          <div class="mgr-kpi-val" id="mk5">0</div>
-          <div class="mgr-kpi-pct" id="mk5pct" style="color:#a78bfa">0%</div>
+          <div class="mgr-kpi-val" id="mk5pct" style="color:#a78bfa">0%</div>
+          <div class="mgr-kpi-pct" id="mk5" style="color:#5c6480;font-weight:500">0</div>
         </div>
         <div class="mgr-kpi-card blue">
           <div class="mgr-kpi-label">เฉลี่ย / วัน</div>
@@ -6014,7 +6015,7 @@ async function confirmImport(){
         <!-- Right: Heatmap -->
         <div class="mgr-card" style="overflow:hidden">
           <div class="mgr-card-hdr">
-            <div class="mgr-card-title">🗓 Heatmap การส่งยอด (30 วันล่าสุด)</div>
+            <div class="mgr-card-title">🗓 Heatmap การส่งยอด (เดือนนี้)</div>
             <div style="display:flex;background:rgba(255,255,255,0.05);border-radius:10px;padding:2px;gap:1px;border:.5px solid rgba(255,255,255,0.08)">
               <button id="mkh-miss" onclick="mgrHeatMode('miss')"
                 style="padding:3px 10px;border-radius:8px;border:none;background:rgba(248,113,113,0.25);color:#f87171;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit">❌ ขาด</button>
