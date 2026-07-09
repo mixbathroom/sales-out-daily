@@ -241,6 +241,8 @@ select option{background:var(--bg2);color:var(--tx)}
 .mgr-tab.on{color:#7fa3f0;border-bottom-color:#3d6be0;background:rgba(61,107,224,0.14);font-weight:700}
 #mgr-nav-right{margin-left:auto;display:flex;align-items:center;gap:10px}
 .mgr-filter-bar{display:flex;align-items:center;gap:8px}
+.mgr-scroll-hint{display:none}
+@keyframes mgrHintBounce{0%,100%{transform:translate(0,-50%)}50%{transform:translate(5px,-50%)}}
 .mgr-sel{padding:5px 10px;background:rgba(255,255,255,0.05);border:.5px solid rgba(255,255,255,0.12);border-radius:8px;color:rgba(200,212,232,0.7);font-size:11px;font-family:inherit;cursor:pointer;outline:none}
 .mgr-sel:focus{border-color:rgba(127,163,240,0.5)}
 .ssel-wrap{position:relative;display:inline-block}
@@ -329,8 +331,9 @@ select option{background:var(--bg2);color:var(--tx)}
   #mgr-nav{height:auto;flex-wrap:wrap;padding:4px 8px;gap:2px}
   .mgr-tab{height:36px;padding:0 10px;font-size:10.5px;gap:3px}
   #mgr-nav-right{margin-left:0;width:100%;order:3;gap:6px;padding:4px 0 2px}
-  .mgr-filter-bar{flex:1;min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .mgr-filter-bar{flex:1;min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch;position:relative}
   .mgr-filter-bar::-webkit-scrollbar{display:none}
+  .mgr-scroll-hint.show{display:flex;align-items:center;justify-content:center;position:sticky;right:2px;top:0;flex-shrink:0;width:20px;height:26px;margin-left:2px;pointer-events:none;font-size:13px;color:#7fa3f0;background:linear-gradient(90deg,rgba(15,20,40,0),rgba(15,20,40,0.92) 55%);border-radius:6px;animation:mgrHintBounce 1.1s ease-in-out infinite;z-index:6}
   .mgr-sel,.ssel-wrap{flex-shrink:0}
   .ssel-display{width:96px;max-width:96px;font-size:11px;padding:9px 8px;min-height:20px}
   #mgr-nav .mgr-logout-btn{display:none!important}
@@ -3571,6 +3574,40 @@ function lsOpenDesktop() {
   if(pick) pick.value = fmt(today);
   _mgrMissDate = fmt(today);
   mgrSwitchTab('overview');
+  mgrScrollHintPeek();
+}
+
+// ── บอกใบ้ว่า filter bar เลื่อนซ้าย-ขวาได้ (เฉพาะมือถือ, แสดงครั้งแรกที่เปิดแดชบอร์ดต่อ session) ──
+function mgrScrollHintPeek() {
+  if (window.innerWidth > 768) return; // เฉพาะจอมือถือ
+  var bar = document.querySelector('.mgr-filter-bar');
+  var hint = document.getElementById('mgr-scroll-hint');
+  if (!bar || !hint) return;
+  setTimeout(function () {
+    if (bar.scrollWidth <= bar.clientWidth + 4) return; // เนื้อหาไม่ล้น ไม่ต้องบอกใบ้
+    hint.classList.add('show');
+    var hideHint = function () {
+      hint.classList.remove('show');
+      bar.removeEventListener('scroll', hideHint);
+      bar.removeEventListener('touchstart', hideHint);
+    };
+    bar.addEventListener('scroll', hideHint, { passive: true });
+    bar.addEventListener('touchstart', hideHint, { passive: true });
+    if (sessionStorage.getItem('mgrScrollHintDone')) return; // เลื่อนโชว์ตัวอย่างแค่ครั้งแรกต่อ session
+    sessionStorage.setItem('mgrScrollHintDone', '1');
+    var peek = function (dist, dur) {
+      return new Promise(function (res) {
+        var start = bar.scrollLeft, t0 = performance.now();
+        function step(t) {
+          var p = Math.min(1, (t - t0) / dur);
+          bar.scrollLeft = start + dist * (1 - Math.pow(1 - p, 3));
+          if (p < 1) requestAnimationFrame(step); else res();
+        }
+        requestAnimationFrame(step);
+      });
+    };
+    peek(56, 380).then(function () { return peek(-56, 380); });
+  }, 700);
 }
 
 function mgrClose() {
@@ -5797,8 +5834,9 @@ async function confirmImport(){
         <select class="mgr-sel" id="mgr-fbr" onchange="mgrUpdateChainBanner();mgrRefresh()">
           <option value="">🏬 ทุกสาขา</option>
         </select>
+        <div class="mgr-scroll-hint" id="mgr-scroll-hint">›</div>
       </div>
-      <button onclick="mgrClearFilter()" title="ล้างตัวกรองทั้งหมด" style="padding:6px 14px;background:rgba(127,163,240,0.12);border:.5px solid rgba(127,163,240,0.3);border-radius:8px;color:rgba(188,208,247,0.9);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .15s;white-space:nowrap" onmouseover="this.style.background='rgba(127,163,240,0.24)'" onmouseout="this.style.background='rgba(127,163,240,0.12)'">↺ ล้างฟิลเตอร์</button>
+      <button onclick="mgrClearFilter()" title="ล้างตัวกรองทั้งหมด" style="padding:5px 10px;background:rgba(127,163,240,0.12);border:.5px solid rgba(127,163,240,0.3);border-radius:7px;color:rgba(188,208,247,0.9);font-size:10px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .15s;white-space:nowrap;flex-shrink:0" onmouseover="this.style.background='rgba(127,163,240,0.24)'" onmouseout="this.style.background='rgba(127,163,240,0.12)'">↺ ล้างฟิลเตอร์</button>
     </div>
   </nav>
 
