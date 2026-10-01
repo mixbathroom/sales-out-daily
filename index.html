@@ -1407,6 +1407,7 @@ function getTarget(b,dateStr){
 
 // ── Firebase Firestore (ES Module) ──────────────────────
 let SD=[];
+let _curSD=[], _oldSD=[], _oldLoaded={};
 let _db=null;
 let _fbReady=false; // ป้องกัน initFirebase() ถูกเรียกซ้ำ
 
@@ -1456,7 +1457,7 @@ async function initFirebase(){
   var statusEl = document.getElementById('fb-status');
   try {
     const { initializeApp } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js');
-    const { initializeFirestore, persistentLocalCache, persistentSingleTabManager, collection, setDoc, onSnapshot, doc, deleteDoc, writeBatch, query, orderBy, where, waitForPendingWrites } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js');
+    const { initializeFirestore, persistentLocalCache, persistentSingleTabManager, collection, setDoc, onSnapshot, doc, deleteDoc, writeBatch, query, orderBy, where, getDocs, waitForPendingWrites } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js');
 
     const app = initializeApp({
       apiKey: "AIzaSyClQz6OGs5LcfM2m5M3H3SyJLcP_BxqVSQ",
@@ -1532,10 +1533,9 @@ async function initFirebase(){
     // เก็บ/ดึงข้อมูลแบบเดือนต่อเดือน — ดึงเฉพาะข้อมูลตั้งแต่วันที่ 1 ของเดือนปัจจุบันเท่านั้น
     var _now = new Date();
     var _cutoffStr = _now.getFullYear() + '-' + String(_now.getMonth()+1).padStart(2,'0') + '-01';
-    const q = query(collection(_db,'sales'), where('d','>=',_cutoffStr), orderBy('d','asc'));
-    onSnapshot(q, function(snapshot){
-      SD = snapshot.docs.map(function(d){
-        var r=d.data(); r._id=d.id;
+    // ── แปลงเอกสาร Firestore → entry (ใช้ร่วมกันทั้งเดือนปัจจุบันและเดือนย้อนหลัง) ──
+    function _normSale(d){
+      var r=d.data(); r._id=d.id;
         // ✅ คำนวณเป้าหมาย (tg) ใหม่สดจาก BRANCHES ปัจจุบันเสมอ แทนค่า tg ที่ถูกบันทึกไว้ตอนกรอกข้อมูล
         // ป้องกันปัญหาเป้าหมายเก่าค้างอยู่เมื่อมีการอัปเดตเป้าหมายภายหลัง (เช่น เป้าเดือนใหม่)
         var _b = getBranch(r.ch, r.bc);
@@ -1544,7 +1544,24 @@ async function initFirebase(){
         // ไม่แก้ข้อมูลจริงในฐานข้อมูล แค่ normalize ตอนแสดงผล/กรองเท่านั้น
         if(r.ps && SUP_ALIAS[r.ps]) r.ps = SUP_ALIAS[r.ps];
         return r;
-      });
+    }
+    // ── โหลดข้อมูลเดือนย้อนหลังแบบครั้งเดียว (ไม่ realtime) เมื่อผู้ใช้เลือกเดือนในแดชบอร์ด ──
+    // ข้อมูลเดือนปัจจุบันยังใช้ onSnapshot เหมือนเดิม จึงไม่เพิ่ม reads ตอนเปิดหน้าเว็บ
+    window._loadOldMonth = async function(y, m){ // m = 0-11
+      var key = y+'-'+String(m+1).padStart(2,'0');
+      if(_oldLoaded[key]) return;
+      var start = key+'-01';
+      var ny = m===11 ? y+1 : y, nm = m===11 ? 1 : m+2;
+      var end = ny+'-'+String(nm).padStart(2,'0')+'-01';
+      var qs = await getDocs(query(collection(_db,'sales'), where('d','>=',start), where('d','<',end), orderBy('d','asc')));
+      _oldLoaded[key] = true;
+      _oldSD = _oldSD.concat(qs.docs.map(function(d){ return _normSale(d); }));
+      SD = _curSD.concat(_oldSD);
+    };
+    const q = query(collection(_db,'sales'), where('d','>=',_cutoffStr), orderBy('d','asc'));
+    onSnapshot(q, function(snapshot){
+      _curSD = snapshot.docs.map(function(d){ return _normSale(d); });
+      SD = _curSD.concat(_oldSD);
       renderList();
       // refresh Desktop Dashboard ถ้าเปิดอยู่
       var dt=document.getElementById('mgr-desktop');
@@ -3846,6 +3863,25 @@ function mgrRefresh() {
   if (_mgrTab==='overview') mgrRenderOverview();
   if (_mgrTab==='ranking')  mgrRenderRanking();
   if (_mgrTab==='missing')  mgrMissRefresh();
+}
+
+// ── เลือกเดือน: ถ้าเป็นเดือนก่อนหน้า ให้ดึงข้อมูลเดือนนั้นจาก Firebase ก่อน แล้วค่อยแสดงผล ──
+async function mgrMonthChange(){
+  var v = document.getElementById('mgr-fm').value;
+  if(v!=='' && window._loadOldMonth){
+    var now = new Date(), m = parseInt(v), y = now.getFullYear();
+    if(m > now.getMonth()) y -= 1; // เดือนที่ยังมาไม่ถึงในปีนี้ → หมายถึงปีที่แล้ว
+    if(m !== now.getMonth() || y !== now.getFullYear()){
+      try{
+        toast('⏳ กำลังโหลดข้อมูลเดือนก่อนหน้า...','ok');
+        await window._loadOldMonth(y, m);
+      }catch(e){
+        console.error(e);
+        toast('⚠ โหลดข้อมูลเดือนนี้ไม่สำเร็จ','err');
+      }
+    }
+  }
+  mgrRefresh();
 }
 
 // ── Helpers ──────────────────────────────────
@@ -6224,7 +6260,7 @@ async function confirmImport(){
         <select class="mgr-sel" id="mgr-fbr" onchange="mgrUpdateChainBanner();mgrRefresh()">
           <option value="">🏬 ทุกสาขา</option>
         </select>
-        <select class="mgr-sel" id="mgr-fm" onchange="mgrRefresh()">
+        <select class="mgr-sel" id="mgr-fm" onchange="mgrMonthChange()">
           <option value="">📅 ทุกเดือน</option>
           <option value="0">มกราคม</option><option value="1">กุมภาพันธ์</option>
           <option value="2">มีนาคม</option><option value="3">เมษายน</option>
